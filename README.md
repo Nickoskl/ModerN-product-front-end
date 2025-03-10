@@ -41,9 +41,9 @@ Any feedback is appreciated. You can email me any suggestions or improvements so
 
 <h2>Project Concept and Screenshots :</h2>
 
-<img src="" alt="project-screenshot" width="550" height="300/">
+<img src="design/product1.jpg" alt="project-screenshot" width="550" height="300/">
 
-<img src="" alt="project-screenshot" width="550" height="300/">
+<img src="design/desktop/Artboard 4.jpg" alt="project-screenshot" width="550" height="300/">
 
   
   
