@@ -1,0 +1,130 @@
+
+
+.slide{
+    position: relative;
+    margin: 0;
+    /* padding-top: 10dvh; */
+    padding-left: 9dvw;
+    /* background-color: var(--paletteWhite); */
+    align-items: center;
+    height:100dvh;
+    display: flex;
+    flex-direction: row; /* Stack children vertically */
+    justify-content: space-between; /* Space out children */
+}
+
+.slide h2{
+    font-size:var(--mainFontMediumSize);
+}
+
+.slide h1{
+    font-size:var(--mainFontBigSize);
+    line-height: 110px;
+}
+
+.slide a{
+    color:var(--paletteOrange);
+    background-color: var(--paletteWhite);
+    padding: 0px 20px;
+    font-size: var(--mainFontMediumSize);
+    border-radius: 3px;
+    transition: all 0.3s ease-in-out;
+    transform: scale(1.0);
+}
+
+.slide a:hover{
+    background-color: var(--paletteOrange);
+    color:var(--paletteWhite);
+    transition: all 0.3s ease-in-out;
+    transform: scale(1.1);
+}
+
+.slideBtn{
+    padding: 13% 0;
+    float:right;
+    position: relative;
+    transition: all 0.3s ease-in-out;
+    transform: scale(1);
+}
+
+.slideBtn:hover{
+    transform: scale(1.1);
+    transition: all 0.3s ease-in-out;
+}
+
+
+.slideAction{
+    position: absolute;
+    width:500px;
+    transform: translate(0,-50%);
+}
+
+.slideCanvas{
+    align-self:flex-end;
+}
+
+h1 p{
+    position:relative;
+    display: inline-block;
+    font-size:calc(var(--mainFontBigSize) - 15px);
+}
+
+h1 p::after{
+    content:'';
+    position:absolute;
+    top:-7px;
+    left:0;
+    width:98%;
+    height:5px;
+    /* background-color:var(--paletteWhite) */
+}
+
+
+.nextSlide{
+    position:absolute;
+    bottom:5dvh;
+    right:50%;
+    /* left:calc(50% - 9dvh/2); */
+    transform: translate(calc(25% + 10px),0);
+    z-index:2;
+    /* width:90px; */
+    transition: all 0.3s ease-in-out;
+}
+
+.nextSlide:hover{
+    bottom:2dvh;
+    /* transform: translate(calc((25% + 10px) * 1.1),0); */
+    transition: all 0.3s ease-in-out;
+    cursor:pointer;
+}
+
+.nextSlide h6{
+    float:right;
+    font-size:var(--mainFontSmallSize);
+    margin:0;
+    transform:translate(-10px,0)
+}
+.nextSlide img{
+    float:left;
+    width:40px;
+    margin-top:10px;
+}
+
+.svgOrange{
+    filter: invert(54%) sepia(94%) saturate(1239%) hue-rotate(342deg) brightness(101%) contrast(101%);
+}
+
+h1,h2,h6{
+    font-family:Bebas Neue;
+    letter-spacing: var(--mainFontMediumLetterSpacing);
+    font-weight: var(--mainFontWeight);
+    padding:2% 0;
+}
+
+a{
+    font-family:Bebas Neue;
+    font-weight: var(--mainFontWeight);
+    letter-spacing: var(--mainFontSmallLetterSpacing);
+    cursor: pointer;
+    text-decoration: none;
+}

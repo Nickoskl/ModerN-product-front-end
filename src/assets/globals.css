@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&display=swap');
+
+:root{
+    --paletteOrange:#eaa525;
+    --paletteWhite:#f8eded;
+    --paletteDark:#173b45;
+    --mainFontSmallSize:25px;
+    --mainFontSmallLetterSpacing:2px;
+    --mainFontWeight:400;
+    --mainFontMediumSize:50px;
+    --mainFontMediumLetterSpacing:4px;
+    --mainFontBigSize:140px;
+}
+
+img,
+picture {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    user-drag: none;
+    -webkit-touch-callout: none;
+}
+
