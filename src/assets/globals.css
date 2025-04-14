@@ -1,6 +1,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&display=swap');
 
+
+::-webkit-scrollbar {
+  width: 18px;
+  /* padding-left:50px; */
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 3px;
+  background-color: var(--paletteOrange);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--paletteWhite);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    /* width:50px; */
+    background-color: var(--paletteDark);
+}
+
+
 :root{
     --paletteOrange:#eaa525;
     --paletteWhite:#f8eded;

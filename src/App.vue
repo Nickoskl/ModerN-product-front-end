@@ -15,6 +15,7 @@ import Slide2 from './components/Slide2.vue'
     </a>
   </div> -->
   <!-- <HelloWorld msg="Vite + Vue" /> -->
+  <!-- <canvas class="webgl"></canvas> -->
   <Navbar />
   <Slide1 />
   <Slide2 />

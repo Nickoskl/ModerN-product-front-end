@@ -57,6 +57,7 @@
     position: absolute;
     width:500px;
     transform: translate(0,-50%);
+    z-index:2;
 }
 
 .slideCanvas{
@@ -128,3 +129,4 @@ a{
     cursor: pointer;
     text-decoration: none;
 }
+

@@ -71,7 +71,7 @@ function addClass(event: MouseEvent) {
 }
 
 .navBar a:hover{
-    padding-top: 3px;
+    /* padding-top: 3px; */
     transform: scale(1.1);
     cursor: pointer;
     transition: all 0.3s ease-in-out;
@@ -81,9 +81,17 @@ function addClass(event: MouseEvent) {
 .box::before{
     animation: lineIn 1s;
     width:0%;
-    height:3px;
+    /* height:3px; */
+    height: 97%;
+    margin-top: -3px;
+    content: 'CLICK';
+    font-weight: bold;
+    color: var(--paletteOrange);
+    overflow: hidden;
+    text-align: center;
+    /* padding-left: 50px; */
     position: absolute;
-    content: '';
+    /* content: ''; */
     top:3px;
     background-color: var(--paletteWhite);
     transition: all 0.5s ease-in-out; 

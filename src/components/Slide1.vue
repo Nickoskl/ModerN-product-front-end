@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import nextSlide from './nextSlide.vue';
-
+import slide1Canvas from './slide1Canvas.vue';
 
 </script>
 
@@ -17,7 +17,8 @@ import nextSlide from './nextSlide.vue';
         </div>
     </div>
     <div class="slideCanvas">
-        <img src="../../design/product1.jpg" alt="">
+        <!-- <img src="../../design/product1.jpg" alt=""> -->
+         <slide1Canvas />
     </div>
 </div>
 
