@@ -13,7 +13,10 @@ const threeLoad=async()=>{
 
 //////////////////////////////////////////////SCENE INIT
 const scene = new THREE.Scene();
-let loader
+var loader, mouseX:number, mouseY:number,distX:number,distY:number;
+var tempX = canObjects.position.x;
+var tempY = canObjects.position.y;
+var speed =0.02;
 // const textureLoader = new THREE.TextureLoader();//REPLACE WITH  THREE.ImageBitmapLoader();
 const DOMCanvas = document.querySelector(".webgl") as HTMLCanvasElement | null;
 
@@ -35,18 +38,21 @@ camera.worldToLocal(new THREE.Vector3(13,0,0));
 scene.add(camera);
 
 
+const axisH = new THREE.AxesHelper(15);
+scene.add(axisH)
 
-canObjects.position.x=13;
+const gridHelper = new THREE.GridHelper(50, 50); // Size and divisions
+scene.add(gridHelper);
+
+canObjects.add(axisH)
+
+
+
+canObjects.position.set(10,0,0);
 canObjects.rotation.y=Math.PI/2.3
 scene.add(canObjects);
 
 /////////////////////////////////
-
-var state={
-    rotateX:0,
-    rotateY:0,
-    rotateZ:0
-}
 
 loader = new RGBELoader();
 loader.load( `/3d/textures/blocky_photo_studio_1k.hdr`, async ( texture ) => {
@@ -58,7 +64,7 @@ texture.mapping = THREE.EquirectangularReflectionMapping;
 scene.environment = texture;
 scene.environmentIntensity=0.8;
 scene.castShadow = true;
-scene.environmentRotation=new THREE.Euler(0.3, 2, 9.2, 'XYZ' );
+scene.rotation.y=12;
 
 } );
 
@@ -67,18 +73,6 @@ scene.environmentRotation=new THREE.Euler(0.3, 2, 9.2, 'XYZ' );
 //     scene.rotation.y = rotation;
 
 // };
-// Example: Rotate the environment on GUI change
-gui.add(state, 'rotateY', 0, Math.PI * 4, 0.01).onChange(() => {
-    scene.rotation.y = state.rotateY;
-});
-
-gui.add(state, 'rotateX', 0, Math.PI * 4, 0.01).onChange(() => {
-    scene.environmentRotation=new THREE.Euler(state.rotateX, 0, -5, 'XYZ' );
-});
-
-// gui.add(state, 'rotateY', 0, Math.PI * 4, 0.01).onChange(() => {
-//     scene.rotation.y = state.rotateY;
-// });
 
 
 ///////////////ASSIGN TEXTURES
@@ -126,16 +120,38 @@ window.addEventListener("resize", () => {
   renderer.setSize(sizes.width, sizes.height);
 });
 
-window.addEventListener("mousemove", (event) => {
+window.addEventListener("mousemove", (event: MouseEvent) => {
     const rect = DOMCanvas.getBoundingClientRect();
-    const mouseX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-    const mouseY = -((event.clientY - rect.top) / rect.height) * 2 + 1; 
-    // light.position.set(mouseX*3, mouseY, 2);
-    camera.position.set(-mouseX*3,-mouseY*3,70);
-    canObjects.position.set(mouseX+10,mouseY,0);
-    scene.rotation.y=mouseX/5;
+    mouseX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    mouseY = -((event.clientY - rect.top) / rect.height) * 2 + 1; 
+    // light.position.set(mouseX*3, mouseY, 2);    
     // canObjects.position.set(mouseX+13,-mouseY,0);
+    if (!shouldAnimate) {
+        shouldAnimate = true; // Enable animation
+        smoothMouseAnim(); // Start the animation
+    }
 });
+
+let shouldAnimate = false;
+const smoothMouseAnim=()=>{
+
+    if(!isNaN(canObjects.position.x)){
+        tempX = canObjects.position.x;
+        tempY = canObjects.position.y;
+    }else{
+        tempX=10;
+        tempY=0;
+    }
+
+    distX = mouseX*2+10 - tempX;
+    distY = mouseY*2 - tempY;
+    // console.log((distX)/speed);
+    console.log(scene.rotation.y);
+    canObjects.position.set(tempX+(distX*speed),tempY+(distY*speed),0);
+    camera.position.set(-mouseX*3,-mouseY*3,70);
+    scene.rotation.y=(tempX/5+10+(distX*speed)+(distX*speed));
+    requestAnimationFrame(smoothMouseAnim);
+}
 
 const loop = () => {
     controls.update();
@@ -144,12 +160,13 @@ const loop = () => {
     window.requestAnimationFrame(loop);
 };
 loop();
-
+      
 }
 
 
 onMounted(() => {
     threeLoad();
+
 });
 
 </script>
