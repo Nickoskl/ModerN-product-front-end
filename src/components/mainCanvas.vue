@@ -3,9 +3,12 @@ import * as THREE from 'three';
 import { OrbitControls, RGBELoader } from 'three/examples/jsm/Addons.js';
 // import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { onMounted } from 'vue';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+// import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 
 /////////////COMPONENT IMPORT
-import {stats, sizes,gui} from '../3d/components/debugTools'
+import {stats, sizes,gui,state} from '../3d/components/debugTools'
 import canObjects from '../3d/components/canModel'
 
 
@@ -17,6 +20,7 @@ var loader, mouseX:number, mouseY:number,distX:number,distY:number;
 var tempX = canObjects.position.x;
 var tempY = canObjects.position.y;
 var speed =0.02;
+
 // const textureLoader = new THREE.TextureLoader();//REPLACE WITH  THREE.ImageBitmapLoader();
 const DOMCanvas = document.querySelector(".webgl") as HTMLCanvasElement | null;
 
@@ -38,13 +42,13 @@ camera.worldToLocal(new THREE.Vector3(13,0,0));
 scene.add(camera);
 
 
-const axisH = new THREE.AxesHelper(15);
-scene.add(axisH)
+// const axisH = new THREE.AxesHelper(15);
+// scene.add(axisH)
 
-const gridHelper = new THREE.GridHelper(50, 50); // Size and divisions
-scene.add(gridHelper);
+// const gridHelper = new THREE.GridHelper(50, 50); // Size and divisions
+// scene.add(gridHelper);
 
-canObjects.add(axisH)
+// canObjects.add(axisH)
 
 
 
@@ -60,42 +64,17 @@ loader.load( `/3d/textures/blocky_photo_studio_1k.hdr`, async ( texture ) => {
 texture.mapping = THREE.EquirectangularReflectionMapping;
 // texture.needsUpdate = true;
 
-// scene.background = texture;
+// scene.background = null;
 scene.environment = texture;
-scene.environmentIntensity=0.8;
+scene.environmentIntensity=state.hdr.exposure;
 scene.castShadow = true;
 scene.rotation.y=12;
 
 } );
 
-// const updateEnvironmentRotation = (rotation:number) => {
-//     // Apply rotation to the scene
-//     scene.rotation.y = rotation;
 
-// };
-
-
-///////////////ASSIGN TEXTURES
-// Array.from(objects as Set<THREE.Object3D>).forEach((obj: THREE.Object3D) => {
-//     if (obj instanceof THREE.Mesh) {
-//         obj.material = new THREE.MeshBasicMaterial({
-//             color:0x000000,
-//             wireframe:true
-//         });
-//     }
-// });
-
-/////////////SCENE SETUP
-// Array.from(objects as Set<THREE.Object3D>).forEach((obj: THREE.Object3D) => {
-//     obj.castShadow=true;
-//     obj.receiveShadow=true;
-//     console.log("TSET")
-//     scene.add(obj);
-// });
 
 THREE.ColorManagement.enabled = true; 
-// renderer.outputEncoding = THREE.sRGBEncoding;
-// THREE.ColorManagement.legacyMode = false;
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 
@@ -110,6 +89,61 @@ controls.enableDamping=true;
 controls.enablePan=false;
 controls.enableZoom=false;
 controls.enableRotate=false;
+
+
+const composer = new EffectComposer(renderer);
+const renderPass = new RenderPass(scene, camera);
+composer.addPass(renderPass);
+
+// const blendShader = {
+//     uniforms: {
+//         tDiffuse: { value: null },
+//         uColor: { value: new THREE.Color(0x000000) },
+//         uAlpha: { value: 1.0 }
+//     },
+//     vertexShader: `
+//         varying vec2 vUv;
+//         void main() {
+//             vUv = uv;
+//             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+//         }
+//     `,
+//     fragmentShader: `
+//         uniform sampler2D tDiffuse;
+//         uniform vec3 uColor;
+//         uniform float uAlpha;
+//         varying vec2 vUv;
+
+//         void main() {
+//             vec4 base = texture2D(tDiffuse, vUv);
+//             // Simple blend without color space conversion
+//             vec3 blendedColor = mix(base.rgb, uColor, 0.05); // Reduced blend factor to 0.05
+//             gl_FragColor = vec4(blendedColor, base.a * uAlpha);
+//         }
+//     `
+// };
+// const blendPass = new ShaderPass(blendShader);
+// composer.addPass(blendPass);
+
+
+
+gui.add(state.hdr,'exposure',0,1,0.01).onChange(()=>{
+    scene.environmentIntensity=state.hdr.exposure;
+    // blendPass.uniforms.uAlpha.value=state.hdr.exposure;
+    if(state.hdr.exposure>0){
+        var canvasObj = document.querySelector('canvas')
+        if(canvasObj){
+            canvasObj.style = `opacity:${state.hdr.exposure}`
+        }
+    }else{
+        var canvasObj = document.querySelector('canvas')
+        if(canvasObj){
+            canvasObj.style = `opacity:${state.hdr.exposure}`
+        }
+    }
+})
+
+
 
 window.addEventListener("resize", () => {
   sizes.width = window.innerWidth;
@@ -146,7 +180,7 @@ const smoothMouseAnim=()=>{
     distX = mouseX*2+10 - tempX;
     distY = mouseY*2 - tempY;
     // console.log((distX)/speed);
-    console.log(scene.rotation.y);
+    // console.log(scene.rotation.y);
     canObjects.position.set(tempX+(distX*speed),tempY+(distY*speed),0);
     camera.position.set(-mouseX*3,-mouseY*3,70);
     scene.rotation.y=(tempX/5+10+(distX*speed)+(distX*speed));
@@ -156,8 +190,10 @@ const smoothMouseAnim=()=>{
 const loop = () => {
     controls.update();
     stats.update(); 
-    renderer.render(scene, camera);
-    window.requestAnimationFrame(loop);
+    // renderer.render(scene, camera);
+    // window.requestAnimationFrame(loop);
+    requestAnimationFrame(loop);
+    composer.render();
 };
 loop();
       
@@ -190,13 +226,13 @@ onMounted(() => {
 } */
 
 canvas{
-
-    display: block; 
-    position: absolute;
+    position: fixed;
+    /* display: block;  */
+    /* position: absolute; */
     top: 0;
     right: 0; 
     z-index: 1;
-    
+    /* transition: all 1.5s ease-in-out;     */
 }
 
 </style>

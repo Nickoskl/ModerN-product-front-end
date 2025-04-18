@@ -15,7 +15,7 @@ import nextSlide from './nextSlide.vue';
         <p class="test">we use eco-friendly materials and <mark> recyclable</mark> packaging with safe, <mark>sustainable</mark> inks. Our goal is simple: deliver powerful <mark>energy</mark> while reducing our impact on the planet.</p>
     </div>
     <div class="slideCanvas">
-        <img src="../../design/product1.jpg" alt="">
+        <!-- <img src="../../design/product1.jpg" alt=""> -->
     </div>
 </div>
 

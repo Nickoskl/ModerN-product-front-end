@@ -9,4 +9,16 @@ const sizes ={
   height: window.innerHeight,
 }
 document.body.appendChild( stats.dom );
-export { stats, gui, sizes };
+
+
+const state={
+  hdr:{
+      exposure:0.8
+  },
+  model:{
+      color: 0xeaa525
+  }
+}
+
+
+export { stats, gui, sizes,state };

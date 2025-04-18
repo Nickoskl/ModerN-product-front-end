@@ -5,12 +5,12 @@
 
 function addClass(event: MouseEvent) {
   const target = event.target as HTMLElement;
-  target.classList.add('box');
-  target.addEventListener("animationend", () => {
+    target.classList.add('box');
+    target.setAttribute('data-before',target.innerHTML);
+    target.addEventListener("animationend", () => {
     target.classList.remove('box');
-// })
-})
-}
+
+})}
 </script>
 <template>
 
@@ -30,19 +30,23 @@ function addClass(event: MouseEvent) {
 
 @keyframes lineIn{
     0%{
-        left: 0;
-        width:0%;
+        /* left: 0;
+        width:0%; */
+        clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
         animation-timing-function: ease-in-out;
     }
     50%{
         animation-timing-function: none;
-        right: 0;
-        width: 100%;
+        /* right: 0;
+        width: 100%; */
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     }
     100%{
         animation-timing-function: ease-in-out;
-        right: 0;
-        width:0%;
+        /* right: 0;
+        width:0%; */
+        clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+
     }
 }
 
@@ -51,11 +55,22 @@ function addClass(event: MouseEvent) {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    margin:30px auto;
+    margin:10px auto;
+    padding: 10px 0;
+    border-radius: 3px;
     width:85vw;
     left:50%;
     transform: translate(-50%,0);
     z-index: 2;
+    background-color: var(--paletteOrangeTrans);
+    transition: all 0.5s ease-in-out;
+    backdrop-filter: blur(10px);
+    z-index: 5;
+}
+
+.navBar:hover{
+    background-color: var(--paletteOrange);
+    transition: all 0.5s ease-in-out;
 }
 
 .navBar a{
@@ -67,6 +82,7 @@ function addClass(event: MouseEvent) {
     vertical-align: middle;
     position: relative;
     transition: all 0.3s ease-in-out;
+    padding:0 7px;
     color: var(--paletteWhite);
 }
 
@@ -80,11 +96,12 @@ function addClass(event: MouseEvent) {
 
 .box::before{
     animation: lineIn 1s;
-    width:0%;
+    width:100%;
     /* height:3px; */
     height: 97%;
     margin-top: -3px;
-    content: 'CLICK';
+    /* content: 'MATERIALS'; */
+    content: attr(data-before);
     font-weight: bold;
     color: var(--paletteOrange);
     overflow: hidden;
@@ -92,6 +109,8 @@ function addClass(event: MouseEvent) {
     /* padding-left: 50px; */
     position: absolute;
     /* content: ''; */
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    /* clip-path: polygon(48% 54%, 100% 0, 100% 100%, 0% 100%); */
     top:3px;
     background-color: var(--paletteWhite);
     transition: all 0.5s ease-in-out; 

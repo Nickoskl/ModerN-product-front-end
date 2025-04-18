@@ -6,11 +6,12 @@ const loader = new THREE.ImageBitmapLoader();
 export var canColorMap:Promise<ImageBitmap>;
 export var canSpecularMap:Promise<ImageBitmap>;
 export var canMetalnessMap:Promise<ImageBitmap>;
+export var canAlphaMap:Promise<ImageBitmap>;
 
-export const loadCanMaps = ()=> {
+export const loadCanMaps = async()=> {
     canColorMap = new Promise((resolve, reject) => {
         loader.load(
-            '/3d/textures/can_color.png',
+            '/3d/textures/can_color_trans.png',
             (imageBitmap) => {
                 resolve(imageBitmap);
             },
@@ -21,7 +22,6 @@ export const loadCanMaps = ()=> {
             }
         );
     });
-
     canSpecularMap= new Promise((resolve,reject)=>{
         loader.load('/3d/textures/can_specular.jpg',
             (ImageBitmap)=>{

@@ -4,6 +4,7 @@
 
 ::-webkit-scrollbar {
   width: 18px;
+  display:none;
   /* padding-left:50px; */
 }
 
@@ -24,25 +25,28 @@
 
 
 :root{
+    --paletteOrangeTrans:#eaa52599;
     --paletteOrange:#eaa525;
     --paletteWhite:#f8eded;
     --paletteDark:#173b45;
     --mainFontSmallSize:25px;
     --mainFontSmallLetterSpacing:2px;
     --mainFontWeight:400;
-    --mainFontMediumSize:50px;
+    --mainFontMediumSize:45px;
     --mainFontMediumLetterSpacing:4px;
     --mainFontBigSize:140px;
 }
 
-img,
-picture {
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    -webkit-user-drag: none;
-    user-drag: none;
-    -webkit-touch-callout: none;
+/* html {
+  scroll-behavior: smooth;
+} */
+
+* {
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
