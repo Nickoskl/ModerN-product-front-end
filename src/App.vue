@@ -1,14 +1,25 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import {useLoadStore} from './store/loadingStore'
+import {storeToRefs} from 'pinia';
+
 import Navbar from './components/Navbar.vue';
+import Pagination from './components/Pagination.vue';
 import Slide1 from './components/Slide1.vue';
 import Slide2 from './components/Slide2.vue';
 import slide1Canvas from './components/mainCanvas.vue';
+import { onMounted } from 'vue';
+
+const {isLoaded,currentSlide} = storeToRefs(useLoadStore());
 
 var slide=ref(1);
 var active=ref(false);
 var scrollTimeout: ReturnType<typeof setTimeout>;
   
+
+onMounted(()=>{
+  console.log(isLoaded.value);
+})
 
 const anim = async()=>{
 
@@ -21,9 +32,6 @@ const anim = async()=>{
     console.log(window.scrollY)
     console.log(window.pageYOffset)
     console.log("-----------------------")
-  // console.log(window.innerHeight-(scrollY/(slide.value))+"SCROLL POSSSSSSS")
-  // console.log(window.innerHeight*0.3+"WINDOWWWWWWWWWWW")
-
   if(window.scrollY<window.innerHeight*0.3){
 
     if(active.value&&window.scrollY!=0){
@@ -77,6 +85,7 @@ document.addEventListener('scroll', () => {
 
 <template>
   <Navbar />
+  <Pagination :num="2" :current="currentSlide" />
   <slide1Canvas />
   <Slide1 />
   <Slide2 />

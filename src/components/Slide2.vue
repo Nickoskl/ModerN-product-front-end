@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import nextSlide from './nextSlide.vue';
+import nextSlide from './NextSlide.vue';
 
 
 

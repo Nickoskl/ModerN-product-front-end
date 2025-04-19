@@ -11,6 +11,9 @@
   "dependencies": {
     "@types/three": "^0.175.0",
     "app": "file:",
+    "bodymovin": "^4.13.0",
+    "lottie-web": "^5.12.2",
+    "pinia": "^3.0.2",
     "three": "^0.175.0",
     "vue": "^3.5.13"
   },

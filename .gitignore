@@ -1,5 +1,6 @@
 .env
-
+*aep
+Adobe After Effects Auto-Save
 # Logs
 logs
 *.log

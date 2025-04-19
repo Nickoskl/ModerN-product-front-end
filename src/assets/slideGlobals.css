@@ -34,7 +34,7 @@
 }
 
 .slide a:hover{
-    background-color: var(--paletteOrange);
+    background-color: var(--paletteDark);
     color:var(--paletteWhite);
     transition: all 0.3s ease-in-out;
     transform: scale(1.1);
