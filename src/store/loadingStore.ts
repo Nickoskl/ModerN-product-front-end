@@ -4,7 +4,7 @@ export const useLoadStore = defineStore('loadStore',{
     state:()=>({
 
         isLoaded:false,
-        currentSlide:1,
+        currentSlide:3,
     }),
     getters:{
 

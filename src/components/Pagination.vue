@@ -4,7 +4,7 @@ import { useLoadStore } from '../store/loadingStore';
 import { onMounted } from 'vue';
 // import {storeToRefs} from 'pinia'
 
-
+var execLimit:boolean=false;
 const {gotoSlide} = useLoadStore()
 
 const props = defineProps({
@@ -13,6 +13,8 @@ const props = defineProps({
 })
 
 watch(() => props.current, (newVal, oldVal) => {
+
+    
     const slides = document.querySelectorAll('.circle');
     
     // Guard clause to prevent invalid indices
@@ -20,40 +22,86 @@ watch(() => props.current, (newVal, oldVal) => {
     
     // Use nextTick to ensure DOM is updated
     nextTick(() => {
+        console.log(oldVal)
+        console.log(newVal)
+        switchSlide(props.current?props.current:1);
 
         if(!oldVal || !newVal){return}
 
         const index = oldVal;
-        if (index >= 0 && index <= slides.length) {
-            if(oldVal<newVal){
-                
-                setTimeout(() => {
-                    slides[index].classList.add('cirDown');
-                }, 50);
+        if (index >= 1 && index <= slides.length) {
+            if(newVal==oldVal+1 || newVal==oldVal-1){
+
+
+                if(oldVal<newVal){
+                    (slides[index-1] as HTMLElement).style.position='relative';
+                    (slides[index-1] as HTMLElement).style.zIndex='6';
+                    (slides[index-1] as HTMLElement).style.backgroundColor='var(--paletteOrange)';
+                    (slides[index-1] as HTMLElement).style.transition='all 0.5s ease-in-out';
+
+                    setTimeout(() => {
+                        slides[index].classList.add('cirDown');
+                    }, 50);
+
+                    setTimeout(() => {
+                        (slides[index-1] as HTMLElement).style.backgroundColor='';
+                    }, 250);
+
+                    setTimeout(() => {
+                        slides[index].classList.remove('cirDown');
+                        (slides[index-1] as HTMLElement).style.transition='';
+                        (slides[index-1] as HTMLElement).style.zIndex='';
+                        (slides[index-1] as HTMLElement).style.position='';
+                    }, 500);
+
+                }else if (oldVal>newVal){
+
+                        (slides[index-1] as HTMLElement).style.backgroundColor='var(--paletteOrange)';
+                        (slides[index-1] as HTMLElement).style.transition='all 0.5s ease-in-out';
+
+                    setTimeout(() => {
+                        slides[index-2].classList.add('cirUp');
+                    }, 50);
+
+                    setTimeout(() => {
+                        (slides[index-1] as HTMLElement).style.backgroundColor='';
+                    }, 250);
+
+                    setTimeout(() => {
+                        slides[index-2].classList.remove('cirUp');
+                        (slides[index-1] as HTMLElement).style.transition='';
+                    }, 500);
+                }else{
+                    console.warn("EXEPTION")
+                }
+
+            }else{
+                slides.forEach((slide)=>{
+                    (slide as HTMLElement).style.opacity='0.5'
+                })
 
                 setTimeout(() => {
-                    slides[index].classList.remove('cirDown');
-                }, 500);
-
-            }else if (oldVal>newVal){
-
-
-                setTimeout(() => {
-                    slides[index-2].classList.add('cirUp');
-                }, 50);
-
-                setTimeout(() => {
-                    slides[index-2].classList.remove('cirUp');
-                }, 500);
-        }else{
-
-        }}
+                    slides.forEach((slide)=>{
+                        (slide as HTMLElement).style.opacity=''
+                    })
+                }, 250);
+            }
+        }
     });
 });
 
 const switchSlide = (iter: number, event?: MouseEvent) => {
+
+    if(execLimit){
+        return
+    }
+    execLimit=true;
+
+    setTimeout(()=>{execLimit=false},500)
+    
     var rect;
-    var targetELM = (event?.target as HTMLElement)
+    var targetELM = (event?.target as HTMLElement);
+
 
         if (event?.target ) {
 
@@ -68,8 +116,8 @@ const switchSlide = (iter: number, event?: MouseEvent) => {
 
 
         } else {
-            const firstCir = document.querySelector('.circle');
-            rect = firstCir ? (firstCir as HTMLElement).getBoundingClientRect() : undefined;
+            const firstAc = document.querySelector('.cirActive');
+            rect = firstAc ? (firstAc as HTMLElement).getBoundingClientRect() : undefined;
         }
         const active = document.querySelector('.active');
 
@@ -78,6 +126,9 @@ const switchSlide = (iter: number, event?: MouseEvent) => {
         const cont = document.querySelector('.pagination');
 
         const rectcont = (cont as HTMLElement).getBoundingClientRect();
+
+
+
 
         
 
@@ -92,6 +143,14 @@ const switchSlide = (iter: number, event?: MouseEvent) => {
             ( thisSlide !== targetELM?.parentElement && thisSlide !== event?.target)
         ) {
             active.style.top = rect.top - rectcont.top + 'px';
+            active.style.width= '10px';
+
+            setTimeout(() => {
+
+                active.style.width= '';
+
+            }, 250);
+
         }
         gotoSlide(iter);
 
@@ -101,11 +160,14 @@ const switchSlide = (iter: number, event?: MouseEvent) => {
 onMounted(()=>{
 
     const thisSlide = document.querySelector('.cirActive');
-    thisSlide instanceof HTMLElement?thisSlide.style='transform:none;':'';
-    switchSlide(1);
+    thisSlide instanceof HTMLElement?thisSlide.style='transform: scale(0.6);':'';
+
+    
+
+    switchSlide(props.current?props.current:1);
 
     setTimeout(() => {
-            thisSlide instanceof HTMLElement?thisSlide.style='':'';
+            thisSlide instanceof HTMLElement?thisSlide.style.transform='':'';
                 }, 500);
 
 })
@@ -135,22 +197,21 @@ onMounted(()=>{
 
         height: 20px;
         top:0;
-        width: 19px;
+        
         
     }
     50%{
 
         height: 60px;
         top:-40px;
-
-        
+        background-color: var(--paletteWhite);
 
     }
     100%{
-
         height: 20px;
         top:0;
-
+        width: 19px;    
+        background-color: var(--paletteOrange);
     }
     
 }
@@ -161,24 +222,41 @@ onMounted(()=>{
 
     height: 20px;
     top:0;
-    width: 19px;
     
 }
 50%{
 
     height: 60px;
-    /* top:-20px; */
-
-    
+    background-color: var(--paletteWhite);
 
 }
 100%{
 
     height: 20px;
     top:0;
+    width: 19px;
+    background-color: var(--paletteOrange);
+}
 
 }
 
+@keyframes cirAc {
+
+0%{
+
+    height: 20px;
+    top:0;
+    background-color: var(--paletteWhite);
+
+}
+100%{
+
+    height: 20px;
+    top:0;
+    width: 19px;
+    /* background-color: var(--paletteOrange); */
+}
+    
 }
 
 
@@ -193,27 +271,37 @@ onMounted(()=>{
     margin: 0 auto;
 }
 
+.pagination:hover>.circle:not(.cirActive) h2{
+    opacity: 0.5;
+}
+
+
 .circle{
     width:20px;
     height:20px;
     border-radius: 50%;
-    background-color: var(--paletteDark);
+    background-color: var(--paletteWhite);
     cursor: pointer;
     text-align: left;
     margin: 10px auto;
-    transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out !important;
+    transform: scale(0.6);
+    transition-delay: 0.25s, 0.25s !important;
+    transition-property: transform, backgroud-color !important;
 }
 .circle h2{
     transition: all 0.5s ease-in-out;
-    margin-left: -80px;
+    margin-left: -75px;
     font-size: var(--mainFontSmallSize);
-    color: var(--paletteDark);
-    transform: translate(0,-3px) scale(0.7);
+    color: var(--paletteWhite);
+    transform: translate(0,-3px) scale(1.1);
     opacity: 0;
     padding:2px 13px;
 }
-.circle:hover> h2{
-    opacity: 0.5;
+
+
+.circle:hover>h2{
+    transform: translate(-8px,-3px) scale(1.1);
 }
 
 
@@ -222,63 +310,60 @@ onMounted(()=>{
 
     width:90px;
     height:20px;
-    border-radius: 15px;
+    border-radius: 4px;
     background-color: var(--paletteWhite);
     content: '';
     position: absolute;
     top:0;
     left:-70px;
-    transform: scale(1.1) translate(0,-5px);
+    transform: scale(1.1) translate(0,-8px);
     z-index: -1;
     padding: 15px 0;
-    transition: all 0.5s ease-in-out;
+    transition: 
+all 0.5s ease-in-out
 
 }
 
 .cirActive{
-    background-color: var(--paletteDark);
-    transition: all 0.5s ease-in-out;
-    /* transition-delay: 0.5s; */
-    transform: scale(0.6);
-    
+    background-color: var(--paletteOrange);
+    transform: scale(0.9);
+    animation: 0.5s cirAc;
 }
 
 .cirActive h2{
     transition: all 0.5s ease-in-out;
-    transform: translate(0,-3px) scale(1.7);
-    color:var(--paletteDark);
+    transform: translate(0,-4px) scale(0.9);
+    color:var(--paletteOrange);
     opacity: 1;
 }
 .cirActive h2:hover{
-
-    opacity: 1;
-    transform: translate(-10px,-3px) scale(1.7);
-
+    transform: translate(-6px,-3px) scale(1);
 }
 
 
-.cirDown::after{
+.cirDown::before{
     border-radius: 15px;
     animation: 0.5s cirDown;
     top:0;
-    left:0;
+    left:0.5px;
     border-radius: 15px;
     content: '';
     position: absolute;
-    background-color: var(--paletteDark);
+    background-color: var(--paletteWhite);
     width: 20px;
 }
 
 
-.cirUp::after{
+.cirUp::before{
     border-radius: 15px;
     animation: 0.5s cirUp;
     top:0;
-    left:0;
+    left:0.5px;
     border-radius: 15px;
     content: '';
     position: absolute;
-    background-color: var(--paletteDark);
+    /* mix-blend-mode:multiply; */
+    background-color: var(--paletteWhite);
     width: 20px;
     /* height: 30px; */
 }

@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import nextSlide from './NextSlide.vue';
 // import slide1Canvas from './slide1Canvas.vue';
+import { useLoadStore } from '../store/loadingStore';
 import lottie from 'lottie-web';
 import { onMounted } from 'vue';
 import type { AnimationItem } from 'lottie-web';
+import { storeToRefs } from 'pinia';
+
+const {gotoSlide} = useLoadStore()
+const {currentSlide} = storeToRefs(useLoadStore())
 
 let anim: AnimationItem | null = null;
 // Optionally, add a mouseenter event listener inside onMounted if needed:
@@ -41,7 +46,7 @@ onMounted(() => {
         <h1>A M<p>oder</p>n Movement.</h1>
         <div class="slideBtn">
             <div class="lottieAnim"></div>
-            <a class="landingBtn" href="#">Fuel Up</a>
+            <a @click="gotoSlide(currentSlide-1)" class="landingBtn" href="#">Fuel Up</a>
         </div>
     </div>
     <!-- <div class="slideCanvas">

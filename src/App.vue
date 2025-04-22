@@ -85,7 +85,7 @@ document.addEventListener('scroll', () => {
 
 <template>
   <Navbar />
-  <Pagination :num="2" :current="currentSlide" />
+  <Pagination :num="3" :current="currentSlide" />
   <slide1Canvas />
   <Slide1 />
   <Slide2 />
