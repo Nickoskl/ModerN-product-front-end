@@ -7,15 +7,21 @@ import { onMounted } from 'vue';
 var execLimit:boolean=false;
 const {gotoSlide} = useLoadStore()
 
+interface Slide {
+    id: number;
+    name: string;
+}
+
 const props = defineProps({
-    current:Number,
-    num:Number
+    current:{type:Number,default:1},
+    slides:{type:Array as () => Slide[],required:true}
 })
 
 watch(() => props.current, (newVal, oldVal) => {
 
     
     const slides = document.querySelectorAll('.circle');
+    const active = document.querySelector('.active');
     
     // Guard clause to prevent invalid indices
     if (oldVal && newVal && !slides || slides.length === 0) return;
@@ -76,6 +82,10 @@ watch(() => props.current, (newVal, oldVal) => {
                 }
 
             }else{
+
+                active?(active as HTMLElement).style.width= '10px':'';
+
+
                 slides.forEach((slide)=>{
                     (slide as HTMLElement).style.opacity='0.5'
                 })
@@ -134,6 +144,8 @@ const switchSlide = (iter: number, event?: MouseEvent) => {
 
         if (
             rect &&
+            props.slides &&
+            props.current &&
             typeof rect.top === 'number' &&
             active &&
             active instanceof HTMLElement &&
@@ -143,12 +155,16 @@ const switchSlide = (iter: number, event?: MouseEvent) => {
             ( thisSlide !== targetELM?.parentElement && thisSlide !== event?.target)
         ) {
             active.style.top = rect.top - rectcont.top + 'px';
-            active.style.width= '10px';
+            // active.style.width= '10px';
 
             setTimeout(() => {
 
-                active.style.width= '';
+                // if(props.slides[props.current].id)
 
+                active.style.width = `${(props.slides[props.current-1] as { name: string }).name.length*10+50}px`;
+                // active.style.left = `-${(props.slides[props.current-1] as { name: string }).name.length*21}px`
+                // active.style.transform = `translateX(-${(props.slides[props.current-1] as { name: string }).name.length-55}px)`
+                console.log((props.slides[props.current-1] as { name: string }).name.length)
             }, 250);
 
         }
@@ -180,8 +196,8 @@ onMounted(()=>{
 
     <div class="pagination">
         <div class="active"></div>
-        <div v-for="iter in props.num" :key="iter" @click="(event) => switchSlide(iter, event)" :class="iter==current?'circle cirActive':' circle'">
-            <h2>WHY</h2>
+        <div v-for="iter in props.slides" :key="iter.id" @click="(event) => switchSlide(iter.id, event)" :class="iter.id==current?'circle cirActive':' circle'">
+            <h2>{{iter.name}}</h2>
         </div>
     </div>
 
@@ -266,7 +282,7 @@ onMounted(()=>{
     top:50%;
     right:9dvw;
     z-index: 5;
-    transform: translate(0,-50%);
+    transform: translate(-300%,-50%);
     text-align: center;
     margin: 0 auto;
 }
@@ -291,17 +307,18 @@ onMounted(()=>{
 }
 .circle h2{
     transition: all 0.5s ease-in-out;
-    margin-left: -75px;
+    /* margin-left: -75px; */
     font-size: var(--mainFontSmallSize);
     color: var(--paletteWhite);
-    transform: translate(0,-3px) scale(1.1);
+    width:200px;
+    transform: translate(30px,-5px) scale(1.1);
     opacity: 0;
     padding:2px 13px;
 }
 
 
-.circle:hover>h2{
-    transform: translate(-8px,-3px) scale(1.1);
+.circle:hover:not(.cirActive)>h2{
+    transform: translate(40px,-5px) scale(1.1);
 }
 
 
@@ -315,13 +332,11 @@ onMounted(()=>{
     content: '';
     position: absolute;
     top:0;
-    left:-70px;
+    /* left:-70px; */
     transform: scale(1.1) translate(0,-8px);
     z-index: -1;
     padding: 15px 0;
-    transition: 
-all 0.5s ease-in-out
-
+    transition: all 0.5s ease-in-out;
 }
 
 .cirActive{
@@ -332,12 +347,18 @@ all 0.5s ease-in-out
 
 .cirActive h2{
     transition: all 0.5s ease-in-out;
-    transform: translate(0,-4px) scale(0.9);
+    transform: translate(10px,-5px) scale(0.9);
     color:var(--paletteOrange);
     opacity: 1;
 }
 .cirActive h2:hover{
-    transform: translate(-6px,-3px) scale(1);
+    transform: translate(26px,-5px) scale(1);
+}
+
+.cirActive:hover> h2{
+
+    transform: translate(26px,-5px) scale(1);
+
 }
 
 

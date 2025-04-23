@@ -10,7 +10,7 @@ import Slide2 from './components/Slide2.vue';
 import slide1Canvas from './components/mainCanvas.vue';
 import { onMounted } from 'vue';
 
-const {isLoaded,currentSlide} = storeToRefs(useLoadStore());
+const {isLoaded,currentSlide,slides} = storeToRefs(useLoadStore());
 
 var slide=ref(1);
 var active=ref(false);
@@ -81,11 +81,22 @@ document.addEventListener('scroll', () => {
 
 });
 
+// window.addEventListener('mousedown', (e) => {
+//     if (e.button === 2) { 
+//       e.preventDefault();
+//     }
+    
+//   });
+
+//   window.addEventListener('contextmenu', (e) => {
+//     e.preventDefault();
+//   });
+
 </script>
 
 <template>
   <Navbar />
-  <Pagination :num="3" :current="currentSlide" />
+  <Pagination :slides="slides" :current="currentSlide" />
   <slide1Canvas />
   <Slide1 />
   <Slide2 />

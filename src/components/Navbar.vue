@@ -61,10 +61,9 @@ function addClass(event: MouseEvent) {
     width:85vw;
     left:50%;
     transform: translate(-50%,0);
-    z-index: 2;
-    background-color: var(--paletteOrangeTrans);
+    /* background-color: var(--paletteOrangeTrans); */
+    /* backdrop-filter: blur(10px); */
     transition: all 0.5s ease-in-out;
-    backdrop-filter: blur(10px);
     z-index: 5;
 }
 

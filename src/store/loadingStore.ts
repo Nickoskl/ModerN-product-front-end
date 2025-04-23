@@ -5,6 +5,32 @@ export const useLoadStore = defineStore('loadStore',{
 
         isLoaded:false,
         currentSlide:3,
+        slides:[
+            {
+                id:1,
+                name:'Home',
+            },
+            {
+                id:2,
+                name:'How'
+            },
+            {
+                id:3,
+                name:'Why'
+            },
+            {
+                id:4,
+                name:'Who'
+            },
+            {
+                id:5,
+                name:'Get Yours'
+            },
+            {
+                id:6,
+                name:'Contact'
+            }
+        ]
     }),
     getters:{
 
@@ -12,7 +38,14 @@ export const useLoadStore = defineStore('loadStore',{
     actions:{
 
         gotoSlide(num:number){
-            this.currentSlide=num;
+            if(num>0 && num<=this.slides.length){
+                this.currentSlide=num;
+            }else if(num>this.slides.length){
+                this.currentSlide=1;
+            }else{
+                console.warn("Invalid Slide Number, Resseting");
+                this.currentSlide=1;
+            }
         },
     }
 })

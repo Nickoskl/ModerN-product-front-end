@@ -52,7 +52,7 @@ scene.add(camera);
 
 
 
-canObjects.position.set(10,0,0);
+canObjects.position.set(10,30,0);
 canObjects.rotation.y=Math.PI/2.3
 scene.add(canObjects);
 
