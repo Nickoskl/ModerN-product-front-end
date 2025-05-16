@@ -4,7 +4,7 @@ export const useLoadStore = defineStore('loadStore',{
     state:()=>({
 
         isLoaded:false,
-        currentSlide:3,
+        currentSlide:1,
         slides:[
             {
                 id:1,

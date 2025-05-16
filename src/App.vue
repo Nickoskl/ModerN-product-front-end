@@ -7,10 +7,11 @@ import Navbar from './components/Navbar.vue';
 import Pagination from './components/Pagination.vue';
 import Slide1 from './components/Slide1.vue';
 import Slide2 from './components/Slide2.vue';
-import slide1Canvas from './components/mainCanvas.vue';
+import mainCanvas from './components/mainCanvas.vue';
 import { onMounted } from 'vue';
 
 const {isLoaded,currentSlide,slides} = storeToRefs(useLoadStore());
+const {gotoSlide} = useLoadStore();
 
 var slide=ref(1);
 var active=ref(false);
@@ -21,44 +22,84 @@ onMounted(()=>{
   console.log(isLoaded.value);
 })
 
-const anim = async()=>{
+const snap=()=>{
+  // active.value=false;
+  const speed = 0.2;
+  // var tempCurrentSlide = currentSlide.value;
 
-  const speed:number=0.1;
-  const scrollY = window.scrollY || window.pageYOffset;
-  const delta = window.scrollY-(window.scrollY*speed);
+  if(window.scrollY>(window.innerHeight*(currentSlide.value-1))){
+  active.value=false;
+  var tempCurrentSlide = currentSlide.value;
+  gotoSlide(currentSlide.value+1);
+    
+    const animDown=()=>{
+      
+          let target = (window.innerHeight * tempCurrentSlide);
+          let current = window.scrollY;
+          let distance = target - current;
+          let step = distance * speed / 2; 
 
-  console.log(active.value)
-    console.log(window.scrollY*speed)
-    console.log(window.scrollY)
-    console.log(window.pageYOffset)
-    console.log("-----------------------")
-  if(window.scrollY<window.innerHeight*0.3){
+          console.log(target)
+          console.log(current+"+"+step)
+          console.log(active.value)
 
-    if(active.value&&window.scrollY!=0){
+              if (Math.abs(distance) < 1) {
+                window.scrollTo({ top: target, left: 0 });
+                active.value=true;
+                return;
+              }
 
-      window.scrollTo({
-      top: delta,
-      left: 0,
-      behavior: "instant",
-    });
-
-      requestAnimationFrame(anim);
-    }else{
-      active.value=false;
-    }
-
+          window.scrollTo({
+            top:current+step+1
+          })
+          
+          requestAnimationFrame(animDown)
+        }
+    animDown();
     
 
-  }else if(window.innerHeight-(scrollY/(slide.value-1))>Math.ceil(window.innerHeight*0.3)){
 
-  }else if(window.innerHeight-(scrollY/(slide.value-1))<Math.ceil(window.innerHeight*0.3)){
+  console.log("DOWNNNNNNNNNNNNNNNNNNNNNNNNN   "+currentSlide.value)
+  }else if(window.scrollY<(window.innerHeight*(currentSlide.value-1))){
+    active.value=false;
+    var tempCurrentSlide = currentSlide.value;
+    gotoSlide(currentSlide.value-1);
+    
+    const animUp=()=>{
+      
+          let target = (window.innerHeight * (tempCurrentSlide-2));
+          let current = window.scrollY;
+          let distance = current - target;
+          let step = distance * speed / 2; 
 
+          console.log(target)
+          console.log(current+"+"+step)
+          console.log(active.value)
 
+              if (Math.abs(distance) < 1) {
+                window.scrollTo({ top: target, left: 0 });
+                active.value=true;
+                return;
+              }
 
+          window.scrollTo({
+            top:current-step-1
+          })
+          
+          requestAnimationFrame(animUp)
+        }
+    animUp();
+    
+
+    console.log("UPPPPPPPPPPPPPPPPPPPPPPPPPPP   "+currentSlide.value)
+  }else if(window.scrollY%window.innerHeight==0){
+        // active.value=true;
+    console.info("STOPPED   "+currentSlide.value)
+    console.log(active.value)
   }else{
-    console.warn("exeption...............")
+    console.warn("EXEPTIONN   "+currentSlide.value)
+    console.log(active.value)
   }
-  
 
 }
 
@@ -66,14 +107,17 @@ document.addEventListener('scroll', () => {
 
 // console.log(window.innerHeight);
 // console.log(`Scroll position Y: ${scrollY}`);
-
+clearTimeout(scrollTimeout);
   active.value=true;
-  clearTimeout(scrollTimeout);
+  
 
   if(active.value){
+    // clearTimeout(scrollTimeout);
+    // active.value=true;
     scrollTimeout= setTimeout(()=>{
     console.log("SCROLLED TO ..........  "+window.scrollY)
-    anim();
+    snap();
+
   },12)
 
 
@@ -97,8 +141,9 @@ document.addEventListener('scroll', () => {
 <template>
   <Navbar />
   <Pagination :slides="slides" :current="currentSlide" />
-  <slide1Canvas />
+  <mainCanvas />
   <Slide1 />
+  <Slide2 />
   <Slide2 />
 </template>
 
