@@ -7,7 +7,7 @@ const props = defineProps({
   },
   navColor: {
     type: String,
-    default: '--paletteWhite',
+    default: '#f8eded',
   },
 })
 
@@ -15,8 +15,8 @@ const props = defineProps({
 <template>
 
 <div class="nextSlide">
-        <img :class="navColor=='--paletteOrange'?'svgOrange':''" src="../assets/graphics/arrow-down.svg" alt="">
-        <h6 :style="{ color: 'var('+navColor+')' }">{{ props.navText }}</h6>
+        <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 583.33"><defs></defs><title>arrow-down</title><path :style="{fill:props.navColor ,stroke:props.navColor}" class="cls-1" d="M400,666.67l200-200m-200,200-200-200m200,200v-350m0-183.34v83.34" transform="translate(-175 -108.33)"/></svg>
+        <h6 :style="{ color: navColor }">{{ props.navText }}</h6>
     </div>
 
 </template>
@@ -25,5 +25,10 @@ const props = defineProps({
 
 @import url(../assets/slideGlobals.css);
 
-
+.cls-1{
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width:50px;
+  transition: all .6s ease-in-out;
+  }
 </style>

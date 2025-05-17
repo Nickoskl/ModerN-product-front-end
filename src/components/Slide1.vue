@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import nextSlide from './NextSlide.vue';
 // import slide1Canvas from './slide1Canvas.vue';
 import { useLoadStore } from '../store/loadingStore';
 import lottie from 'lottie-web';
@@ -8,7 +7,7 @@ import type { AnimationItem } from 'lottie-web';
 import { storeToRefs } from 'pinia';
 
 const {gotoSlide} = useLoadStore()
-const {currentSlide,slides} = storeToRefs(useLoadStore())
+const {currentSlide} = storeToRefs(useLoadStore())
 
 let anim: AnimationItem | null = null;
 
@@ -126,7 +125,6 @@ onMounted(() => {
 
 
 <div class="slide">
-    <nextSlide :navText="slides[1].name" />
     <div class="slideAction">
         <h2>Not Just A Drink</h2>
         <h1>A M<p>oder</p>n Movement.</h1>

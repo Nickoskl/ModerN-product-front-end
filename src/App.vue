@@ -5,13 +5,15 @@ import {storeToRefs} from 'pinia';
 
 import Navbar from './components/Navbar.vue';
 import Pagination from './components/Pagination.vue';
+import nextSlide from './components/NextSlide.vue';
 import Slide1 from './components/Slide1.vue';
 import Slide2 from './components/Slide2.vue';
 import mainCanvas from './components/mainCanvas.vue';
 import { onMounted } from 'vue';
+import { watch } from 'vue';
 
 const {isLoaded,currentSlide,slides} = storeToRefs(useLoadStore());
-const {gotoSlide} = useLoadStore();
+const {gotoSlide,setColInit,applyColVar} = useLoadStore();
 
 var slide=ref(1);
 var active=ref(false);
@@ -19,31 +21,38 @@ var scrollTimeout: ReturnType<typeof setTimeout>;
   
 
 onMounted(()=>{
-  console.log(isLoaded.value);
+  // console.log(isLoaded.value);
+  applyColVar();
 })
+
+watch(() => currentSlide.value, () => {
+  // applyColVar();
+});
 
 const snap=()=>{
   // active.value=false;
-  const speed = 0.2;
+  const speed = 0.09;
   // var tempCurrentSlide = currentSlide.value;
 
-  if(window.scrollY>(window.innerHeight*(currentSlide.value-1))){
+  if(window.scrollY>(window.innerHeight*(currentSlide.value-1)) && active.value){
   active.value=false;
   var tempCurrentSlide = currentSlide.value;
   gotoSlide(currentSlide.value+1);
     
     const animDown=()=>{
+      active.value=false;
       
           let target = (window.innerHeight * tempCurrentSlide);
           let current = window.scrollY;
           let distance = target - current;
           let step = distance * speed / 2; 
 
-          console.log(target)
-          console.log(current+"+"+step)
-          console.log(active.value)
+          // console.log(target)
+          // console.log(current+"+"+step)
+          // console.log(active.value)
+          // console.log(distance)
 
-              if (Math.abs(distance) < 1) {
+              if (Math.abs(distance) < 5) {
                 window.scrollTo({ top: target, left: 0 });
                 active.value=true;
                 return;
@@ -59,24 +68,26 @@ const snap=()=>{
     
 
 
-  console.log("DOWNNNNNNNNNNNNNNNNNNNNNNNNN   "+currentSlide.value)
-  }else if(window.scrollY<(window.innerHeight*(currentSlide.value-1))){
+  // console.log("DOWNNNNNNNNNNNNNNNNNNNNNNNNN   "+currentSlide.value)
+  }else if(window.scrollY<(window.innerHeight*(currentSlide.value-1)) && active.value){
     active.value=false;
     var tempCurrentSlide = currentSlide.value;
     gotoSlide(currentSlide.value-1);
     
     const animUp=()=>{
+      active.value=false;
       
           let target = (window.innerHeight * (tempCurrentSlide-2));
           let current = window.scrollY;
           let distance = current - target;
           let step = distance * speed / 2; 
 
-          console.log(target)
-          console.log(current+"+"+step)
-          console.log(active.value)
+          // console.log(target)
+          // console.log(current+"+"+step)
+          // console.log(active.value)
+          // console.log(distance)
 
-              if (Math.abs(distance) < 1) {
+              if (Math.abs(distance) < 5) {
                 window.scrollTo({ top: target, left: 0 });
                 active.value=true;
                 return;
@@ -91,14 +102,15 @@ const snap=()=>{
     animUp();
     
 
-    console.log("UPPPPPPPPPPPPPPPPPPPPPPPPPPP   "+currentSlide.value)
+    // console.log("UPPPPPPPPPPPPPPPPPPPPPPPPPPP   "+currentSlide.value)
   }else if(window.scrollY%window.innerHeight==0){
-        // active.value=true;
-    console.info("STOPPED   "+currentSlide.value)
-    console.log(active.value)
+        active.value=true;
+    // console.info("STOPPED   "+currentSlide.value)
+    // console.log(active.value)
   }else{
-    console.warn("EXEPTIONN   "+currentSlide.value)
-    console.log(active.value)
+    active.value=true;
+    // console.warn("EXEPTIONN   "+currentSlide.value)
+    // console.log(active.value)
   }
 
 }
@@ -115,7 +127,7 @@ clearTimeout(scrollTimeout);
     // clearTimeout(scrollTimeout);
     // active.value=true;
     scrollTimeout= setTimeout(()=>{
-    console.log("SCROLLED TO ..........  "+window.scrollY)
+    // console.log("SCROLLED TO ..........  "+window.scrollY)
     snap();
 
   },12)
@@ -139,8 +151,9 @@ clearTimeout(scrollTimeout);
 </script>
 
 <template>
-  <Navbar />
-  <Pagination :slides="slides" :current="currentSlide" />
+  <Navbar :navPrimColor="(slides[currentSlide-1].primCol as string)" :navSecColor="(slides[currentSlide-1].seconCol as string)"/>
+  <Pagination :slides="slides" :current="currentSlide" :navPrimColor="(slides[currentSlide-1].primCol as string)" :navSecColor="(slides[currentSlide-1].seconCol as string)"/>
+  <nextSlide :navText="slides[currentSlide].name" :navColor="(slides[currentSlide-1].seconCol as string)"/>
   <mainCanvas />
   <Slide1 />
   <Slide2 />

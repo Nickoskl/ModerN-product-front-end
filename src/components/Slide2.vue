@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import nextSlide from './NextSlide.vue';
-import { useLoadStore } from '../store/loadingStore';
-import { storeToRefs } from 'pinia';
+// import { useLoadStore } from '../store/loadingStore';
+// import { storeToRefs } from 'pinia';
 
 
-const {currentSlide,slides} = storeToRefs(useLoadStore())
+// const {currentSlide,slides} = storeToRefs(useLoadStore())
 
 </script>
 
@@ -12,7 +11,6 @@ const {currentSlide,slides} = storeToRefs(useLoadStore())
 
 
 <div class="slide">
-    <nextSlide :navText="slides[2].name" navColor="--paletteOrange" />
     <div class="slideAction">
         <h1>@ M<p>oder</p>n</h1>
         <p class="test">we use eco-friendly materials and <mark> recyclable</mark> packaging with safe, <mark>sustainable</mark> inks. Our goal is simple: deliver powerful <mark>energy</mark> while reducing our impact on the planet.</p>

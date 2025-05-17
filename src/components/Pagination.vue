@@ -14,7 +14,9 @@ interface Slide {
 
 const props = defineProps({
     current:{type:Number,default:1},
-    slides:{type:Array as () => Slide[],required:true}
+    slides:{type:Array as () => Slide[],required:true},
+    navPrimColor:{type:String, default:'#eaa525'},
+    navSecColor:{type:String, default:'#f8eded'}
 })
 
 watch(() => props.current, (newVal, oldVal) => {
@@ -194,7 +196,7 @@ onMounted(()=>{
 
 <template>
 
-    <div class="pagination">
+    <div :style="`--paletteSec:${props.navSecColor};--palettePrim:${props.navPrimColor}`" class="pagination">
         <div class="active"></div>
         <div v-for="iter in props.slides" :key="iter.id" @click="(event) => switchSlide(iter.id, event)" :class="iter.id==current?'circle cirActive':' circle'">
             <h2>{{iter.name}}</h2>
@@ -220,14 +222,14 @@ onMounted(()=>{
 
         height: 60px;
         top:-40px;
-        background-color: var(--paletteWhite);
+        background-color: var(--paletteSec);
 
     }
     100%{
         height: 20px;
         top:0;
         width: 19px;    
-        background-color: var(--paletteOrange);
+        background-color: var(--palettePrim);
     }
     
 }
@@ -243,7 +245,7 @@ onMounted(()=>{
 50%{
 
     height: 60px;
-    background-color: var(--paletteWhite);
+    background-color: var(--paletteSec);
 
 }
 100%{
@@ -251,7 +253,7 @@ onMounted(()=>{
     height: 20px;
     top:0;
     width: 19px;
-    background-color: var(--paletteOrange);
+    background-color: var(--palettePrim);
 }
 
 }
@@ -262,7 +264,7 @@ onMounted(()=>{
 
     height: 20px;
     top:0;
-    background-color: var(--paletteWhite);
+    background-color: var(--paletteSec);
 
 }
 100%{
@@ -270,7 +272,7 @@ onMounted(()=>{
     height: 20px;
     top:0;
     width: 19px;
-    /* background-color: var(--paletteOrange); */
+    /* background-color: var(--palettePrim); */
 }
     
 }
@@ -296,7 +298,7 @@ onMounted(()=>{
     width:20px;
     height:20px;
     border-radius: 50%;
-    background-color: var(--paletteWhite);
+    background-color: var(--paletteSec);
     cursor: pointer;
     text-align: left;
     margin: 10px auto;
@@ -309,7 +311,7 @@ onMounted(()=>{
     transition: all 0.5s ease-in-out;
     /* margin-left: -75px; */
     font-size: var(--mainFontSmallSize);
-    color: var(--paletteWhite);
+    color: var(--paletteSec);
     width:200px;
     transform: translate(30px,-5px) scale(1.1);
     opacity: 0;
@@ -328,7 +330,7 @@ onMounted(()=>{
     width:90px;
     height:20px;
     border-radius: 4px;
-    background-color: var(--paletteWhite);
+    background-color: var(--paletteSec);
     content: '';
     position: absolute;
     top:0;
@@ -340,7 +342,7 @@ onMounted(()=>{
 }
 
 .cirActive{
-    background-color: var(--paletteOrange);
+    background-color: var(--palettePrim);
     transform: scale(0.9);
     animation: 0.5s cirAc;
 }
@@ -348,7 +350,7 @@ onMounted(()=>{
 .cirActive h2{
     transition: all 0.5s ease-in-out;
     transform: translate(10px,-5px) scale(0.9);
-    color:var(--paletteOrange);
+    color:var(--palettePrim);
     opacity: 1;
 }
 .cirActive h2:hover{
@@ -370,7 +372,7 @@ onMounted(()=>{
     border-radius: 15px;
     content: '';
     position: absolute;
-    background-color: var(--paletteWhite);
+    background-color: var(--paletteSec);
     width: 20px;
 }
 
@@ -384,7 +386,7 @@ onMounted(()=>{
     content: '';
     position: absolute;
     /* mix-blend-mode:multiply; */
-    background-color: var(--paletteWhite);
+    background-color: var(--paletteSec);
     width: 20px;
     /* height: 30px; */
 }
