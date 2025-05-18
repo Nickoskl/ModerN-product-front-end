@@ -1,141 +1,139 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import {useLoadStore} from './store/loadingStore'
-import {storeToRefs} from 'pinia';
-
+import { ref,watch,onMounted } from 'vue';
 import Navbar from './components/Navbar.vue';
 import Pagination from './components/Pagination.vue';
 import nextSlide from './components/NextSlide.vue';
 import Slide1 from './components/Slide1.vue';
 import Slide2 from './components/Slide2.vue';
 import mainCanvas from './components/mainCanvas.vue';
-import { onMounted } from 'vue';
-import { watch } from 'vue';
+
+import "splitting/dist/splitting.css";
+import "splitting/dist/splitting-cells.css";
+import Splitting from "splitting";
+
+import { createTimeline } from 'animejs'
+import {animate,utils,createTimer } from 'animejs';;
+
+import {useLoadStore} from './store/loadingStore'
+import {storeToRefs} from 'pinia';
+
+import {snap} from './animations/scrollSnapp';
 
 const {isLoaded,currentSlide,slides} = storeToRefs(useLoadStore());
-const {gotoSlide,setColInit,applyColVar} = useLoadStore();
+const {setColInit} = useLoadStore();
 
-var slide=ref(1);
-var active=ref(false);
+// var slide=ref(1);
+
 var scrollTimeout: ReturnType<typeof setTimeout>;
   
 
 onMounted(()=>{
   // console.log(isLoaded.value);
-  applyColVar();
+  setColInit();
+  
+  document.addEventListener('scroll', () => {
+
+  clearTimeout(scrollTimeout);
+    // active.value=true;
+    
+
+    // if(active.value){
+      scrollTimeout= setTimeout(()=>{
+      // console.log("SCROLLED TO ..........  "+window.scrollY)
+      snap();
+
+    },12)
+
+
+    // }
+
+  });
+
 })
 
 watch(() => currentSlide.value, () => {
-  // applyColVar();
+  console.warn("TRIGGER");
+
+//   animate('.slideAction p',{
+//     scale: [
+//     { to: 1.25, ease: 'inOut(3)', duration: 200 },
+//     { to: 1, ease: createSpring({ stiffness: 300 }) }
+//   ],
+//   loop: true,
+//   loopDelay: 250,
+// });
+const [ $timer01,$timer02,$timer03 ] = utils.$('.timer');
+
+const timer1 = createTimer({
+  duration: 500,
+  // onUpdate: self => $timer01.innerHTML = self.currentTime.toString(),
 });
 
-const snap=()=>{
-  // active.value=false;
-  const speed = 0.09;
-  // var tempCurrentSlide = currentSlide.value;
+const timeline = createTimeline()
+.sync(timer1)
 
-  if(window.scrollY>(window.innerHeight*(currentSlide.value-1)) && active.value){
-  active.value=false;
-  var tempCurrentSlide = currentSlide.value;
-  gotoSlide(currentSlide.value+1);
-    
-    const animDown=()=>{
-      active.value=false;
-      
-          let target = (window.innerHeight * tempCurrentSlide);
-          let current = window.scrollY;
-          let distance = target - current;
-          let step = distance * speed / 2; 
+// .add({
+//   onUpdate: self => $timer03.innerHTML = self.currentTime.toString(),
+//   duration: 1000
+// });
 
-          // console.log(target)
-          // console.log(current+"+"+step)
-          // console.log(active.value)
-          // console.log(distance)
-
-              if (Math.abs(distance) < 5) {
-                window.scrollTo({ top: target, left: 0 });
-                active.value=true;
-                return;
-              }
-
-          window.scrollTo({
-            top:current+step+1
-          })
-          
-          requestAnimationFrame(animDown)
-        }
-    animDown();
-    
+const text:Element|null = document.querySelector('.test');
 
 
-  // console.log("DOWNNNNNNNNNNNNNNNNNNNNNNNNN   "+currentSlide.value)
-  }else if(window.scrollY<(window.innerHeight*(currentSlide.value-1)) && active.value){
-    active.value=false;
-    var tempCurrentSlide = currentSlide.value;
-    gotoSlide(currentSlide.value-1);
-    
-    const animUp=()=>{
-      active.value=false;
-      
-          let target = (window.innerHeight * (tempCurrentSlide-2));
-          let current = window.scrollY;
-          let distance = current - target;
-          let step = distance * speed / 2; 
-
-          // console.log(target)
-          // console.log(current+"+"+step)
-          // console.log(active.value)
-          // console.log(distance)
-
-              if (Math.abs(distance) < 5) {
-                window.scrollTo({ top: target, left: 0 });
-                active.value=true;
-                return;
-              }
-
-          window.scrollTo({
-            top:current-step-1
-          })
-          
-          requestAnimationFrame(animUp)
-        }
-    animUp();
-    
-
-    // console.log("UPPPPPPPPPPPPPPPPPPPPPPPPPPP   "+currentSlide.value)
-  }else if(window.scrollY%window.innerHeight==0){
-        active.value=true;
-    // console.info("STOPPED   "+currentSlide.value)
-    // console.log(active.value)
-  }else{
-    active.value=true;
-    // console.warn("EXEPTIONN   "+currentSlide.value)
-    // console.log(active.value)
-  }
-
+if(!text){
+  return
 }
 
-document.addEventListener('scroll', () => {
+const split = Splitting({ target: text, by: 'lines' });
+console.log(split[0].lines)
+if (text.textContent) {
+  console.log(text.textContent?.split(/\r?\n/))
+  // text.innerHTML = text.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
+  var letters = document.querySelectorAll('letter'); 
+}
+const lines = split[0].lines;
+// console.log(text);
+// console.log(text.textContent);
 
-// console.log(window.innerHeight);
-// console.log(`Scroll position Y: ${scrollY}`);
-clearTimeout(scrollTimeout);
-  active.value=true;
+if(!lines){
+  return
+}
+
+var maxLineLen= 0;
+
+lines.forEach((elm)=>maxLineLen = Math.max(elm.length,maxLineLen));
+
+const marksAnim = document.querySelectorAll('.slideAction mark');
+
+if(!marksAnim){return}
+
+marksAnim.forEach((elm,i)=>{
   
+  setTimeout(()=>{
+      (elm as HTMLElement).style='clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);opacity:1;';
+  },1550 )
 
-  if(active.value){
-    // clearTimeout(scrollTimeout);
-    // active.value=true;
-    scrollTimeout= setTimeout(()=>{
-    // console.log("SCROLLED TO ..........  "+window.scrollY)
-    snap();
+})
 
-  },12)
+lines.slice().reverse().forEach((elm,i)=>{
+  // var iter =i;
+  console.log(elm);
+  console.log(i+"----------")
+  const circleAnimation = animate(elm, {
+  translateX: [-100,0],
+  opacity: [0,1],
+  duration: 1600,
+  onUpdate: self => $timer01.innerHTML = self.currentTime.toString(),
+  delay: (el, i) => 150 * (((maxLineLen-elm.length)+1)*(elm.length-(i+1)+1.5))
+});
 
+// timeline.sync(circleAnimation)
 
-  }
+})
 
 });
+
+
 
 // window.addEventListener('mousedown', (e) => {
 //     if (e.button === 2) { 
@@ -157,6 +155,9 @@ clearTimeout(scrollTimeout);
   <mainCanvas />
   <Slide1 />
   <Slide2 />
+  <div class="timer">
+    TIMER
+  </div>
   <Slide2 />
 </template>
 
@@ -172,5 +173,11 @@ clearTimeout(scrollTimeout);
 }
 .logo.vue:hover {
   filter: drop-shadow(0 0 2em #42b883aa);
+}
+
+.timer{
+  position: fixed;
+  top:10%;
+  left:10%;
 }
 </style>

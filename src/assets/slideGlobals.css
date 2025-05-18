@@ -141,6 +141,13 @@ h1 p::after{
     transition: all .6s ease-in-out;
 }
 
+#leftMaskAnim{
+    mask-position:0%;
+    mask-size: 450%;
+    mask-image: linear-gradient(135deg, rgba(255,0,0,0) 45%, black 65%);
+    transition: all 2s ease-out;
+}
+
 h1,h2,h6{
     font-family:Bebas Neue;
     letter-spacing: var(--mainFontMediumLetterSpacing);

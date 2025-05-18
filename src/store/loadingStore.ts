@@ -9,22 +9,21 @@ export const useLoadStore = defineStore('loadStore',{
             prim:'#eaa525',
             sec:'#f8eded',
             backg:'#173b45',
-            primTrans:''
         },
         slides:[
             {
                 id:1,
                 name:'Home',
-                primCol:'#eaa525',
-                seconCol:'#f8eded',
-                backgCol:'#173b45',
+                primCol:'var(--paletteOrange)',
+                seconCol:'var(--paletteWhite)',
+                backgCol:'var(--paletteDark)',
             },
             {
                 id:2,
                 name:'How',
-                primCol:'#f8eded',
-                seconCol:'#eaa525',
-                backgCol:'#173b45',
+                primCol:'var(--paletteWhite)',
+                seconCol:'var(--paletteOrange)',
+                backgCol:'var(--paletteDark)',
             },
             {
                 id:3,
@@ -62,9 +61,9 @@ export const useLoadStore = defineStore('loadStore',{
     actions:{
 
         gotoSlide(num:number){
-            console.log(this.colors.prim)
-            console.log(this.colors.sec)
-            console.log(this.colors.backg)
+            // console.log(this.colors.prim)
+            // console.log(this.colors.sec)
+            // console.log(this.colors.backg)
             if(num>0 && num<=this.slides.length){
                 this.currentSlide=num;
             }else if(num>this.slides.length){
@@ -77,19 +76,11 @@ export const useLoadStore = defineStore('loadStore',{
 
         setColInit(){
 
-            this.colors.prim=getComputedStyle(document.documentElement).getPropertyValue('--paletteOrange').trim();
-            this.colors.sec=getComputedStyle(document.documentElement).getPropertyValue('--paletteWhite').trim();
-            this.colors.backg=getComputedStyle(document.documentElement).getPropertyValue('--paletteDark').trim();
+            document.documentElement.style.setProperty('--paletteOrange',this.colors.prim);
+            document.documentElement.style.setProperty('--paletteWhite',this.colors.sec);
+            document.documentElement.style.setProperty('--paletteDark',this.colors.backg);
 
         },
 
-        applyColVar(){
-
-            const root = document.documentElement;
-            root.style.setProperty('--paletteOrange', String(this.slides[this.currentSlide-1].primCol));
-            root.style.setProperty('--paletteWhite', String(this.slides[this.currentSlide-1].seconCol));
-            root.style.setProperty('--paletteDark', String(this.slides[this.currentSlide-1].backgCol));
-
-        }
     }
 })

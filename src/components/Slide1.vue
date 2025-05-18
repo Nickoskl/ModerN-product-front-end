@@ -45,16 +45,16 @@ const letterAnim=()=>{
     const slideActionLetter = document.querySelector('.slideAction h1')
     const landingBtn = document.querySelector('.slideBtn')
 
-    if(Math.ceil(mouseX)>40){
+    if(Math.ceil(mouseX)>0){
 
       
-      (slideActionLetter as HTMLElement).style.letterSpacing=`calc(var(--mainFontMediumLetterSpacing) + (${mouseX/13-3}px))`;
-      (landingBtn as HTMLElement).style.transform=`translate(${mouseX}px,0)`
+      (slideActionLetter as HTMLElement).style.letterSpacing=`calc(var(--mainFontMediumLetterSpacing) + (${deltaX/13-3}px))`;
+      (landingBtn as HTMLElement).style.transform=`translate(${deltaX}px,0)`;
     }
 
-    if(Math.abs(mouseY)>20){
+    if(Math.abs(mouseY)>0){
 
-      (slideActionLetter as HTMLElement).style.lineHeight=`${110+Math.abs(mouseY)/5-4}px`
+      // (slideActionLetter as HTMLElement).style.lineHeight=`${110+Math.abs(mouseY)/5-4}px`;
 
     }
 
