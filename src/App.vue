@@ -3,6 +3,7 @@ import { ref,watch,onMounted } from 'vue';
 import Navbar from './components/Navbar.vue';
 import Pagination from './components/Pagination.vue';
 import nextSlide from './components/NextSlide.vue';
+import SlideWrapper from './components/SlideWrapper.vue';
 import Slide1 from './components/Slide1.vue';
 import Slide2 from './components/Slide2.vue';
 import mainCanvas from './components/mainCanvas.vue';
@@ -19,6 +20,7 @@ import {storeToRefs} from 'pinia';
 
 import {snap} from './animations/scrollSnapp';
 
+const slidesArr=[Slide1,Slide2];
 const {isLoaded,currentSlide,slides} = storeToRefs(useLoadStore());
 const {setColInit} = useLoadStore();
 
@@ -77,7 +79,7 @@ const timeline = createTimeline()
 //   duration: 1000
 // });
 
-const text:Element|null = document.querySelector('.test');
+const text:Element|null = document.querySelector('.slideAction > p');
 
 
 if(!text){
@@ -115,7 +117,7 @@ marksAnim.forEach((elm,i)=>{
 
 })
 
-lines.slice().reverse().forEach((elm,i)=>{
+lines.forEach((elm,i)=>{
   // var iter =i;
   console.log(elm);
   console.log(i+"----------")
@@ -153,12 +155,13 @@ lines.slice().reverse().forEach((elm,i)=>{
   <Pagination :slides="slides" :current="currentSlide" :navPrimColor="(slides[currentSlide-1].primCol as string)" :navSecColor="(slides[currentSlide-1].seconCol as string)"/>
   <nextSlide :navText="slides[currentSlide].name" :navColor="(slides[currentSlide-1].seconCol as string)"/>
   <mainCanvas />
-  <Slide1 />
-  <Slide2 />
+    <SlideWrapper v-for="(slide,idx) in slidesArr" :key="idx" :slideStyle="(slides[idx].primCol as string)" :slideId="slides[idx].id">
+      <component :is="slide" />
+    </SlideWrapper>
   <div class="timer">
     TIMER
   </div>
-  <Slide2 />
+  <!-- <Slide2 /> -->
 </template>
 
 <style scoped>

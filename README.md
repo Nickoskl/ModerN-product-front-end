@@ -21,6 +21,9 @@
   <a href="https://vitejs.dev/" target="_blank">
     <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
   </a>
+  <a href="https://animejs.com/" target="_blank">
+    <img src="https://img.shields.io/badge/Anime.js-E95420?style=for-the-badge&logo=anime&logoColor=white" alt="Anime.js" />
+  </a>
 </p>
 
 
@@ -28,9 +31,16 @@
 
 Here're some of the project's best features:
 
+*   A Customisable Menu That Includes:
+*  -   Reactive site colors for user experimentation (even on 3d models)
+*  -   Reactive 3d model textures and site icons
 *   3D object rendering with WebGL and ThreeJS
 *   PBR workflow with multiple maps and textures for each object
 *   Imported animations from Maya rather than using Threejs for physics
+*   Optimised and modular css rules to reduce repeatable code
+*   ZERO Raster images( Exept THREE texturing) with the use of SVG's-
+*   And AnimeJS for text and animations
+*   Many custom animations including Scoll Snapping, Interactive Moving Letters, Custom Pagination Menu and many more
 
 <h2>💖Like my work?</h2>
 

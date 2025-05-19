@@ -6,14 +6,13 @@ import { onMounted } from 'vue';
 import type { AnimationItem } from 'lottie-web';
 import { storeToRefs } from 'pinia';
 
+import letterFloat from '../animations/letterFloat';
 const {gotoSlide} = useLoadStore()
 const {currentSlide} = storeToRefs(useLoadStore())
 
 let anim: AnimationItem | null = null;
 
-var mouseX:number,mouseY:number,deltaX:number,deltaY:number;
-  const speed:number = 0.02;
-  var shouldAnimate:boolean = true;
+  
 
   function addClass(event: MouseEvent) {
   const target = event.target as HTMLElement;
@@ -24,55 +23,16 @@ var mouseX:number,mouseY:number,deltaX:number,deltaY:number;
 
 })}
 
-const letterAnim=()=>{
-  const slideAction = document.querySelector('.slideAction')
-  const style = window.getComputedStyle(slideAction as HTMLElement);
-  const matrix = new WebKitCSSMatrix(style.transform);
-  // const rect = (slideAction as HTMLElement).getBoundingClientRect();
-
-    if(deltaX && deltaY){
-
-      deltaX = (Math.ceil(mouseX*3) - (matrix.m41)-100);
-      deltaY = (Math.ceil(-mouseY*3) - matrix.m42+200);
-
-
-    }else{
-      deltaX=1; 
-      deltaY=1;
-    }
-
-
-    const slideActionLetter = document.querySelector('.slideAction h1')
-    const landingBtn = document.querySelector('.slideBtn')
-
-    if(Math.ceil(mouseX)>0){
-
-      
-      (slideActionLetter as HTMLElement).style.letterSpacing=`calc(var(--mainFontMediumLetterSpacing) + (${deltaX/13-3}px))`;
-      (landingBtn as HTMLElement).style.transform=`translate(${deltaX}px,0)`;
-    }
-
-    if(Math.abs(mouseY)>0){
-
-      // (slideActionLetter as HTMLElement).style.lineHeight=`${110+Math.abs(mouseY)/5-4}px`;
-
-    }
-
-    
-    (slideAction as HTMLElement).style.transform = `translate(
-    ${(matrix.m41 + (deltaX * speed))}px, 
-    calc(${Math.abs(matrix.m42 + (deltaY * speed))}px)
-    )`;
-
-  requestAnimationFrame(letterAnim);
-
-  }
-
   
 
 onMounted(() => {
-  const slideAction = document.querySelector('.slideAction')
-  const rect = (slideAction as HTMLElement).getBoundingClientRect();
+
+
+  const slideAction = document.querySelectorAll('.slideAction')
+  if(slideAction){
+    const letters = new letterFloat(slideAction as NodeListOf<HTMLElement>);
+    // letters.loop();
+  }
 
 
   const container = document.querySelector('.lottieAnim');
@@ -101,21 +61,7 @@ onMounted(() => {
 
 
 
-  if(slideAction){
-    
-    window.addEventListener('mousemove',(event:MouseEvent)=>{
-      // console.log(rect)
-    mouseX = ((event.clientX - rect.left) / rect.width) * 30 - 1;
-    mouseY = -((event.clientY - rect.top) / rect.height) * 30 + 1; 
 
-    if(shouldAnimate){
-      shouldAnimate=false;
-      letterAnim()
-    }
-
-    })
-
-  }
   
 
 });
@@ -124,7 +70,6 @@ onMounted(() => {
 <template>
 
 
-<div class="slide">
     <div class="slideAction">
         <h2>Not Just A Drink</h2>
         <h1>A M<p>oder</p>n Movement.</h1>
@@ -133,7 +78,6 @@ onMounted(() => {
             <a @mouseenter="addClass" @click="gotoSlide(currentSlide-1)" class="landingBtn" href="#">Fuel Up</a>
         </div>
     </div>
-</div>
 
 
 </template>
@@ -168,9 +112,6 @@ h1,h2,h6{
     color:var(--paletteWhite);
 }
 
-.slide{
-    background-color: var(--paletteOrange);
-}
 
 .slideAction{
     top:0;
