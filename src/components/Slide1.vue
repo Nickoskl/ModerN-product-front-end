@@ -6,7 +6,6 @@ import { onMounted } from 'vue';
 import type { AnimationItem } from 'lottie-web';
 import { storeToRefs } from 'pinia';
 
-import letterFloat from '../animations/letterFloat';
 const {gotoSlide} = useLoadStore()
 const {currentSlide} = storeToRefs(useLoadStore())
 
@@ -26,13 +25,6 @@ let anim: AnimationItem | null = null;
   
 
 onMounted(() => {
-
-
-  const slideAction = document.querySelectorAll('.slideAction')
-  if(slideAction){
-    const letters = new letterFloat(slideAction as NodeListOf<HTMLElement>);
-    // letters.loop();
-  }
 
 
   const container = document.querySelector('.lottieAnim');

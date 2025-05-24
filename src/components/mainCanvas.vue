@@ -1,209 +1,155 @@
 <script setup lang="ts">
 import * as THREE from 'three';
-import { OrbitControls, RGBELoader } from 'three/examples/jsm/Addons.js';
+import { onMounted,watch } from 'vue';
 // import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { onMounted } from 'vue';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-// import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+// import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { CSM } from 'three/addons/csm/CSM.js';
 
-/////////////COMPONENT IMPORT
-import {stats, sizes,gui,state} from '../3d/components/debugTools'
+///////////// 3D COMPONENT IMPORT
+
+import {threeLoad,camera,scene,slideTransition,shouldAnimate,floor,csm,animState} from '../3d/index';
 import canObjects from '../3d/components/canModel'
 
+///////////// Animation
 
-const threeLoad=async()=>{
+import {animate,utils,createTimer } from 'animejs';
+// import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 
-//////////////////////////////////////////////SCENE INIT
-const scene = new THREE.Scene();
-var loader, mouseX:number, mouseY:number,distX:number,distY:number;
-var tempX = canObjects.position.x;
-var tempY = canObjects.position.y;
-var speed =0.02;
+///////////// Animation Store
 
-// const textureLoader = new THREE.TextureLoader();//REPLACE WITH  THREE.ImageBitmapLoader();
-const DOMCanvas = document.querySelector(".webgl") as HTMLCanvasElement | null;
-
-if (!DOMCanvas) {
-    throw new Error("Canvas element with class 'webgl' not found");
-}
-const renderer = new THREE.WebGLRenderer({
-    canvas: DOMCanvas,
-    alpha: true,
-    antialias:true,
-});
+import {useLoadStore} from '../store/loadingStore';
+import { storeToRefs } from 'pinia';
 
 
 
-const camera = new THREE.PerspectiveCamera(25, sizes.width / sizes.height, 0.01, 1000);
-camera.position.z=70;
-camera.lookAt(new THREE.Vector3(13,0,0));
-camera.worldToLocal(new THREE.Vector3(13,0,0));
-scene.add(camera);
 
-
-// const axisH = new THREE.AxesHelper(15);
-// scene.add(axisH)
-
-// const gridHelper = new THREE.GridHelper(50, 50); // Size and divisions
-// scene.add(gridHelper);
-
-// canObjects.add(axisH)
+const {isLoaded,currentSlide,slides} = storeToRefs(useLoadStore());
 
 
 
-canObjects.position.set(10,30,0);
-canObjects.rotation.y=Math.PI/2.3
-scene.add(canObjects);
-
-/////////////////////////////////
-
-loader = new RGBELoader();
-loader.load( `/3d/textures/blocky_photo_studio_1k.hdr`, async ( texture ) => {
-
-texture.mapping = THREE.EquirectangularReflectionMapping;
-// texture.needsUpdate = true;
-
-// scene.background = null;
-scene.environment = texture;
-scene.environmentIntensity=state.hdr.exposure;
-scene.castShadow = true;
-scene.rotation.y=12;
-
-} );
 
 
-
-THREE.ColorManagement.enabled = true; 
-renderer.setSize(window.innerWidth, window.innerHeight);
-
-
-
-const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(0, 5, 0);
-light.castShadow = true;
-scene.add(light);
-
-const controls = new OrbitControls(camera,DOMCanvas);
-controls.enableDamping=true;
-controls.enablePan=false;
-controls.enableZoom=false;
-controls.enableRotate=false;
-
-
-const composer = new EffectComposer(renderer);
-const renderPass = new RenderPass(scene, camera);
-composer.addPass(renderPass);
-
-// const blendShader = {
-//     uniforms: {
-//         tDiffuse: { value: null },
-//         uColor: { value: new THREE.Color(0x000000) },
-//         uAlpha: { value: 1.0 }
-//     },
-//     vertexShader: `
-//         varying vec2 vUv;
-//         void main() {
-//             vUv = uv;
-//             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-//         }
-//     `,
-//     fragmentShader: `
-//         uniform sampler2D tDiffuse;
-//         uniform vec3 uColor;
-//         uniform float uAlpha;
-//         varying vec2 vUv;
-
-//         void main() {
-//             vec4 base = texture2D(tDiffuse, vUv);
-//             // Simple blend without color space conversion
-//             vec3 blendedColor = mix(base.rgb, uColor, 0.05); // Reduced blend factor to 0.05
-//             gl_FragColor = vec4(blendedColor, base.a * uAlpha);
-//         }
-//     `
-// };
-// const blendPass = new ShaderPass(blendShader);
-// composer.addPass(blendPass);
-
-
-
-gui.add(state.hdr,'exposure',0,1,0.01).onChange(()=>{
-    scene.environmentIntensity=state.hdr.exposure;
-    // blendPass.uniforms.uAlpha.value=state.hdr.exposure;
-    if(state.hdr.exposure>0){
-        var canvasObj = document.querySelector('canvas')
-        if(canvasObj){
-            canvasObj.style = `opacity:${state.hdr.exposure}`
-        }
-    }else{
-        var canvasObj = document.querySelector('canvas')
-        if(canvasObj){
-            canvasObj.style = `opacity:${state.hdr.exposure}`
-        }
-    }
-})
-
-
-
-window.addEventListener("resize", () => {
-  sizes.width = window.innerWidth;
-  sizes.height = window.innerHeight;
-
-  camera.aspect = sizes.width / sizes.height;
-  camera.updateProjectionMatrix();
-  renderer.setSize(sizes.width, sizes.height);
-});
-
-window.addEventListener("mousemove", (event: MouseEvent) => {
-    const rect = DOMCanvas.getBoundingClientRect();
-    mouseX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-    mouseY = -((event.clientY - rect.top) / rect.height) * 2 + 1; 
-    // light.position.set(mouseX*3, mouseY, 2);    
-    // canObjects.position.set(mouseX+13,-mouseY,0);
-    if (!shouldAnimate) {
-        shouldAnimate = true; // Enable animation
-        smoothMouseAnim(); // Start the animation
-    }
-});
-
-let shouldAnimate = false;
-const smoothMouseAnim=()=>{
-
-    if(!isNaN(canObjects.position.x)){
-        tempX = canObjects.position.x;
-        tempY = canObjects.position.y;
-    }else{
-        tempX=10;
-        tempY=0;
-    }
-
-    distX = mouseX*2+10 - tempX;
-    distY = mouseY*2 - tempY;
-    // console.log((distX)/speed);
+onMounted(async() => {
+    await threeLoad();
+    // console.log(canObjects.position);
+    // console.log(camera.rotation);
+    // console.log(camera.position);
     // console.log(scene.rotation.y);
-    canObjects.position.set(tempX+(distX*speed),tempY+(distY*speed),0);
-    camera.position.set(-mouseX*3,-mouseY*3,70);
-    scene.rotation.y=(tempX/5+10+(distX*speed)+(distX*speed));
-    requestAnimationFrame(smoothMouseAnim);
-}
-
-const loop = () => {
-    controls.update();
-    stats.update(); 
-    // renderer.render(scene, camera);
-    // window.requestAnimationFrame(loop);
-    requestAnimationFrame(loop);
-    composer.render();
-};
-loop();
-      
-}
-
-
-onMounted(() => {
-    threeLoad();
 
 });
+
+watch(() => currentSlide.value ,()=>{
+ slideTransition.value=true;
+
+
+    if(currentSlide.value==2){
+
+
+        const slide2Cans=new THREE.Group();
+        const can2 = canObjects.clone(true);
+        can2.children.forEach((obj)=>{
+            if((obj as THREE.Mesh).isMesh&&(obj as THREE.Mesh).name=='polySurface1'){
+                var newMat=new THREE.MeshStandardMaterial({color:'#f8eded',roughness:0});
+                (obj as THREE.Mesh).material=newMat;
+                // if (csm && typeof csm.setupMaterial === 'function') {
+                //     csm.setupMaterial(newMat);
+                //     }
+            }
+        })
+        can2.position.set(0,-6.5,0);
+        can2.rotation.z=Math.PI/2;
+        can2.rotation.y=-Math.PI/2.6;
+        console.log(can2);
+        slide2Cans.add(can2);
+
+        const can3=can2.clone(true);
+        can3.children.forEach((obj)=>{
+            if((obj as THREE.Mesh).isMesh&&(obj as THREE.Mesh).name=='polySurface1'){
+                var newMat=new THREE.MeshStandardMaterial({color:'#f8eded',roughness:0,wireframe:true});
+                (obj as THREE.Mesh).material=newMat;
+            // if (csm && typeof csm.setupMaterial === 'function') {
+            // csm.setupMaterial(newMat);
+            // }
+            }
+        })
+        can3.rotation.y=-Math.PI+Math.PI/4;
+        can3.position.x=-10;
+        can3.position.y=-2.2;
+        can3.rotation.x=Math.PI/4;
+        can2.rotation.y=Math.PI*2.6;
+        slide2Cans.add(can3);
+
+        slide2Cans.position.set(-8,0,-4)
+
+        scene.add(slide2Cans);
+
+        animate(animState.camera.position,{
+            x:{to:-6.36,
+            duration:1000,
+            },
+            y:{to:16.17,
+            duration:1000,
+            },
+            z:{to:86.32,
+            duration:1000,
+            },
+        // loop:true,
+        // alternate: true,
+        ease: 'inOut(1.675)',
+        onUpdate:()=>{
+            camera.position.x=animState.camera.position.x;
+            camera.position.y=animState.camera.position.y;
+            camera.position.z=animState.camera.position.z;
+            // console.log(animState.camera.position.x,camera.position.x+"---------");
+            // console.log(animState.camera.position.y,camera.position.y+"---------")
+            // console.log(animState.camera.position.z,camera.position.z+"---------")
+        },
+        onComplete:()=>{slideTransition.value=false;shouldAnimate.value = true}
+        })
+
+        animate(camera.rotation,{
+            x:{to:-0.19,
+            duration:1000,
+            },
+            y:{to:-0.08,
+            duration:1000,
+            },
+            z:{to:-0.006,
+            duration:1000,
+            },
+        // loop:true,
+        // alternate: true,
+        ease: 'inOut(1.675)',
+        onUpdate:()=>{
+            // camera.position.x=animState.camera.position.x;
+            // camera.position.y=animState.camera.position.y;
+            // camera.position.z=animState.camera.position.z;
+            // console.log(animState.camera.position.x,camera.position.x+"---------");
+            // console.log(animState.camera.position.y,camera.position.y+"---------")
+            // console.log(animState.camera.position.z,camera.position.z+"---------")
+        },
+        onComplete:()=>{slideTransition.value=false;shouldAnimate.value = true}
+        })
+
+        animate(canObjects.position,{
+            x:{to:12,
+            duration:1000,
+            },
+            y:{to:0,
+            duration:1000,
+            },
+            z:{to:12,
+            duration:1000,
+            },
+        // loop:true,
+        // alternate: true,
+        ease: 'inOut(1.675)',
+        onComplete:()=>{slideTransition.value=false;shouldAnimate.value = true}
+        })
+        
+    }
+
+})
 
 </script>
 <template>
@@ -227,8 +173,6 @@ onMounted(() => {
 
 canvas{
     position: fixed;
-    /* display: block;  */
-    /* position: absolute; */
     top: 0;
     right: 0; 
     z-index: 1;

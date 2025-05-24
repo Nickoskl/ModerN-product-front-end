@@ -17,5 +17,6 @@ Proper TODO file to prevent me from ripping my eyes out every time I search for 
 +Add intro and outro animation for text on slides
 +Replace lottie with AnimateJS
 +Add load manager
-+Finish importing can model and animate on slide 2
++Add options to letterTransitions to accomodate for diffirent aligned texts 
++Optimise 3d textures
 +Keep working on the rest of the page+++

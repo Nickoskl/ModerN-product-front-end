@@ -26,7 +26,7 @@
 
 
     <div class="slideAction">
-        <h1>@ M<p>oder</p>n</h1>
+        <h1 data-splitting>@ M<p>oder</p>n</h1>
         <p data-splitting="lines" class="test">We use eco-friendly materials and <mark> recyclable</mark> packaging with safe, <mark>sustainable</mark> inks. Our goal is simple: deliver powerful <mark>energy</mark> while reducing our impact on the planet.</p>
     </div>
     <div class="slideCanvas">

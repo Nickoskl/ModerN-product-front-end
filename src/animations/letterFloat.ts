@@ -36,7 +36,7 @@ export default class letterFloat{
     loop(){
 
 
-        console.log("TESTSET");
+        // console.log("TESTSET");
 
                 
         if (!this.slideAction) return;
@@ -46,7 +46,7 @@ export default class letterFloat{
         const style = window.getComputedStyle(
             this.slideAction instanceof NodeList?this.slideAction[this.store.currentSlide.value - 1]:this.slideAction
         );
-        
+
         const matrix = new WebKitCSSMatrix(style.transform);
 
             if(this.deltaX && this.deltaY){
@@ -59,7 +59,7 @@ export default class letterFloat{
             this.deltaX=1; 
             this.deltaY=1;
             }
-            console.log(Math.floor(this.deltaX*10))
+            // console.log(Math.floor(this.deltaX*10))
             let slideActionLetter;
             if(this.slideAction instanceof NodeList && this.slideAction[this.store.currentSlide.value - 1].querySelector('h1')){
                 slideActionLetter = this.slideAction[this.store.currentSlide.value - 1].querySelector('h1');
@@ -70,7 +70,7 @@ export default class letterFloat{
             if(Math.ceil(this.mouseX)>0){
 
             if(slideActionLetter){
-                (slideActionLetter as HTMLElement).style.letterSpacing=`calc(var(--mainFontMediumLetterSpacing) + (${this.deltaX/13-3}px))`;
+                (slideActionLetter as HTMLElement).style.letterSpacing=`calc(var(--mainFontMediumLetterSpacing) + (${this.deltaX/18-3}px))`;
             }
 
             (landingBtn as HTMLElement).style.transform=`translate(${this.deltaX}px,0)`;
