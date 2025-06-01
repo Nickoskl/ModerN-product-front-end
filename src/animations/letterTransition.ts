@@ -11,7 +11,7 @@ import "splitting/dist/splitting-cells.css";
 
 var slideiter:HTMLElement;
 var lines;
-export const letterTransition =(slideNum:Number,htmlObj:string)=>{
+export const letterTransition =(slideNum:number,htmlObj:string)=>{
     // const {isLoaded,currentSlide,slides} = storeToRefs(useLoadStore());
     const {setColInit} = useLoadStore();
     //   animate('.slideAction p',{
@@ -38,9 +38,8 @@ export const letterTransition =(slideNum:Number,htmlObj:string)=>{
     // });
     
     const slideContainer:Array<HTMLElement>=Array.from(document.querySelectorAll('.slide')) as HTMLElement[];
-    slideContainer.forEach((slide)=>{
-        if(parseFloat(slide.id)==slideNum){slideiter=slide}
-    })
+    slideiter=slideContainer[slideNum-1];
+
     
     if(!slideiter){return}
     const textArr:Array<HTMLElement>= Array.from(slideiter.querySelectorAll(`${htmlObj}`)) as Array<HTMLElement>;
@@ -76,15 +75,45 @@ export const letterTransition =(slideNum:Number,htmlObj:string)=>{
 
         const marksAnim = document.querySelectorAll('.slideAction mark');
 
-        if(!marksAnim){return}
+        if(marksAnim){
 
-        marksAnim.forEach((elm,i)=>{
-        
-        setTimeout(()=>{
-            (elm as HTMLElement).style='clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);opacity:1;';
-        },1550 )
+            marksAnim.forEach((elm,i)=>{
+                (elm as HTMLElement).style.transition='all 0s';
+                (elm as HTMLElement).classList.remove('graphAnimLeftClass');
+                
+            setTimeout(()=>{
+                // (elm as HTMLElement).style='clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);opacity:1;';
+                // (elm as HTMLElement).style=`--delay:${i*1050}`;
+                (elm as HTMLElement).style.transition='';
+                (elm as HTMLElement).classList.add('graphAnimLeftClass');
+                
+            },550 *(lines.length-i) )
 
-        })
+            })
+            
+        }
+
+        const afterElmAnim = slideiter.querySelector('.slideAction h1 p');
+
+        if(afterElmAnim){
+            (afterElmAnim as HTMLElement).style.setProperty('--afterElmAnimDur','all 0s ease-out');
+            (afterElmAnim as HTMLElement).style.removeProperty('--afterElmClipP');
+            // (afterElmAnim as HTMLElement).style.transition='';
+            if(Array.isArray(lines[0])){
+                setTimeout(()=>{
+                    (afterElmAnim as HTMLElement).style.removeProperty('--afterElmAnimDur');
+                    (afterElmAnim as HTMLElement).style.setProperty('--afterElmClipP','polygon(0 0, 100% 0, 100% 100%, 0 100%)');
+                },lines.length*500)
+            }else{
+                setTimeout(()=>{
+                    (afterElmAnim as HTMLElement).style.removeProperty('--afterElmAnimDur');
+                    (afterElmAnim as HTMLElement).style.setProperty('--afterElmClipP','polygon(0 0, 100% 0, 100% 100%, 0 100%)');
+                },lines.length*150)
+            }
+
+        }
+
+
 
 
         if(htmlObj=="h1"||htmlObj=="h2"||htmlObj=="h3"||htmlObj=="h4"||htmlObj=="h5"||htmlObj=="h6"){
@@ -105,7 +134,7 @@ export const letterTransition =(slideNum:Number,htmlObj:string)=>{
                 opacity: [0,1],
                 duration: 1600,
                 onUpdate: self => $timer01.innerHTML = self.currentTime.toString(),
-                delay: (el, i) => 150 * (((maxLineLen-(Array.isArray(elm) ? elm.length : 1))+1)*((Array.isArray(elm) ? elm.length : 1)-(i+1)+1.5))
+                delay: (el, i) => 150 * (((maxLineLen-(Array.isArray(elm) ? elm.length : 1))+1)*((Array.isArray(elm) ? elm.length : 1)-(i+1)+1.5)),
                 });
 
             })

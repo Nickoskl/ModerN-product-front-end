@@ -1,6 +1,8 @@
 
 
 .slide{
+    --afterElmClipP:polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+    --afterElmAnimDur: all 1s ease-out;
     scroll-snap-type: y;
     position: relative;
     margin: 0;
@@ -22,6 +24,7 @@
 .slide h1{
     font-size:var(--mainFontBigSize);
     line-height: 110px;
+    /* transition:all 0.3s ease-in-out; */
 }
 
 .slide a{
@@ -45,19 +48,20 @@
     padding: 5% 0;
     float:right;
     position: relative;
-    transition: scale 0.3s ease-in-out;
+    /* transition: scale 0.3s ease-in-out; */
     transform: scale(1);
 }
 
 .slideBtn:hover{
     transform: scale(1.1);
-    transition: all 0.3s ease-in-out;
+    /* transition: all 0.3s ease-in-out; */
 }
 
 
 .slideAction{
     position: absolute;
-    width:550px;
+    width:650px;
+    min-width:100px;
     transform: translate(0,60%);
     z-index:2;
 }
@@ -98,11 +102,15 @@ h1 p{
     font-size:calc(var(--mainFontBigSize) - 15px);
 }
 
+
+
 h1 p::after{
     content:'';
     position:absolute;
     top:-7px;
     left:0;
+    clip-path: var(--afterElmClipP);
+    transition: var(--afterElmAnimDur);
     width:98%;
     height:5px;
     /* background-color:var(--paletteWhite) */
@@ -163,3 +171,25 @@ a{
     text-decoration: none;
 }
 
+
+@keyframes graphAnimLeft{
+    from{
+
+        clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+        opacity:0;
+
+    }
+    to{
+
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+        opacity:1;
+
+    }
+}
+
+.graphAnimLeftClass{
+    /* animation-delay: var(--delay); */
+    animation:graphAnimLeft 1s ease-out;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    opacity:1;
+}

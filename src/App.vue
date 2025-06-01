@@ -50,12 +50,16 @@ onMounted(()=>{
 
   });
 
+  letterTransition(currentSlide.value,'p');
+  letterTransition(currentSlide.value,'h1');
+
 })
 
 watch(() => currentSlide.value, () => {
   console.warn("TRIGGER");
   letterTransition(currentSlide.value,'p');
   letterTransition(currentSlide.value,'h1');
+
 });
 
 
