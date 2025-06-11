@@ -1,23 +1,5 @@
 <script setup lang="ts">
-// import { watch } from 'vue';
-// import { useLoadStore } from '../store/loadingStore';
-// import { storeToRefs } from 'pinia';
-// import { onMounted } from 'vue';
 
-// const {currentSlide,slides} = storeToRefs(useLoadStore())
-
-// const {currentSlide}=storeToRefs(useLoadStore());
-
-// onMounted(()=>{
-
-// })
-
-// watch(()=>currentSlide.value,()=>{
-    // if(currentSlide.value==2){
-        
-        
-    // }
-// })
 
 </script>
 

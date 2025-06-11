@@ -41,7 +41,8 @@
     background-color: var(--paletteWhite);
     color:var(--paletteOrange);
     transition: all 0.3s ease-in-out;
-    transform: scale(1.1);
+        transform: scale(1.1) !important;
+    transition-delay:0.5s;
 }
 
 .slideBtn{
@@ -78,17 +79,19 @@
     width:101%;
     margin-left: -1px;
     font-size: calc(var(--mainFontMediumSize) + 5px);
-    text-decoration:underline;
+    /* text-decoration:underline; */
     text-underline-offset: 7px;
     height: 55%;
     content: attr(data-before);
     font-weight: bold;
     color: var(--paletteWhite);
     overflow: hidden;
+    margin-top:-5px;
     text-align: center;
     position: absolute;
     clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
-    top:47%;
+    top:53%;
+    overflow:hidden;
     transform: translate(0,-50%);
     left:0;
     background-color: var(--paletteOrange);

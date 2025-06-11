@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { watch, nextTick } from 'vue';
-import { useLoadStore } from '../store/loadingStore';
+import { useSlideStore } from '../store/slideStore';
 import { onMounted } from 'vue';
 // import {storeToRefs} from 'pinia'
 
 var execLimit:boolean=false;
-const {gotoSlide} = useLoadStore()
+const {gotoSlide} = useSlideStore()
 
 interface Slide {
     id: number;

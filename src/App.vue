@@ -8,17 +8,18 @@ import Slide1 from './components/Slide1.vue';
 import Slide2 from './components/Slide2.vue';
 import mainCanvas from './components/mainCanvas.vue';
 
-import {useLoadStore} from './store/loadingStore'
+import {useSlideStore} from './store/slideStore'
 import {storeToRefs} from 'pinia';
 
 import {snap} from './animations/scrollSnapp';
-import { letterTransition } from './animations/letterTransition';
+// import { letterTransition } from './animations/letterTransition';
 import letterFloat from './animations/letterFloat';
 
 const slidesArr=[Slide1,Slide2];
-const {isLoaded,currentSlide,slides} = storeToRefs(useLoadStore());
-const {setColInit} = useLoadStore();
-
+const {currentSlide,slides} = storeToRefs(useSlideStore());
+const {setColInit,setAnimationHooks} = useSlideStore();
+let slideAction: NodeListOf<HTMLElement>;
+let slideArr: NodeListOf<HTMLElement>
 // var slide=ref(1);
 
 var scrollTimeout: ReturnType<typeof setTimeout>;
@@ -26,8 +27,11 @@ var scrollTimeout: ReturnType<typeof setTimeout>;
 
 onMounted(()=>{
   // console.log(isLoaded.value);
-  setColInit();
-    const slideAction = document.querySelectorAll('.slideAction')
+    setColInit();
+    setAnimationHooks();
+    // animateSlide(['h1','h2','p']);
+    slideArr = document.querySelectorAll('.slide');
+    slideAction = document.querySelectorAll('.slideAction') as NodeListOf<HTMLElement>;
     if(slideAction){
     const letters = new letterFloat(slideAction as NodeListOf<HTMLElement>);
     // letters.loop();
@@ -35,10 +39,7 @@ onMounted(()=>{
   document.addEventListener('scroll', () => {
 
   clearTimeout(scrollTimeout);
-    // active.value=true;
-    
 
-    // if(active.value){
       scrollTimeout= setTimeout(()=>{
       // console.log("SCROLLED TO ..........  "+window.scrollY)
       snap();
@@ -50,16 +51,12 @@ onMounted(()=>{
 
   });
 
-  letterTransition(currentSlide.value,'p');
-  letterTransition(currentSlide.value,'h1');
-
 })
 
 watch(() => currentSlide.value, () => {
-  console.warn("TRIGGER");
-  letterTransition(currentSlide.value,'p');
-  letterTransition(currentSlide.value,'h1');
-
+    console.log("TEST");
+    console.warn("TRIGGER");
+    console.log(slideAction[Number(currentSlide.value)-1] as HTMLElement);
 });
 
 
@@ -81,7 +78,7 @@ watch(() => currentSlide.value, () => {
   <Navbar :navPrimColor="(slides[currentSlide-1].primCol as string)" :navSecColor="(slides[currentSlide-1].seconCol as string)"/>
   <Pagination :slides="slides" :current="currentSlide" :navPrimColor="(slides[currentSlide-1].primCol as string)" :navSecColor="(slides[currentSlide-1].seconCol as string)"/>
   <nextSlide :navText="slides[currentSlide].name" :navColor="(slides[currentSlide-1].seconCol as string)"/>
-  <mainCanvas />
+  <!-- <mainCanvas /> -->
     <SlideWrapper v-for="(slide,idx) in slidesArr" :key="idx" :slideStyle="(slides[idx].primCol as string)" :slideId="slides[idx].id">
       <component :is="slide" />
     </SlideWrapper>

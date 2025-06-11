@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/animejs": "^3.1.13",
     "@types/three": "^0.175.0",
     "animejs": "^4.0.2",
     "app": "file:",

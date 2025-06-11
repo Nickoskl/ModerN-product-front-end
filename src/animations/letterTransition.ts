@@ -1,9 +1,9 @@
 import Splitting from "splitting";
 
-import {useLoadStore} from '../store/loadingStore'
+import {useSlideStore} from '../store/slideStore'
 import {storeToRefs} from 'pinia';
 
-import { createTimeline } from 'animejs'
+import { createTimeline, JSAnimation, Timeline } from 'animejs'
 import {animate,utils,createTimer } from 'animejs';
 
 import "splitting/dist/splitting.css";
@@ -11,49 +11,34 @@ import "splitting/dist/splitting-cells.css";
 
 var slideiter:HTMLElement;
 var lines;
-export const letterTransition =(slideNum:number,htmlObj:string)=>{
-    // const {isLoaded,currentSlide,slides} = storeToRefs(useLoadStore());
-    const {setColInit} = useLoadStore();
-    //   animate('.slideAction p',{
-    //     scale: [
-    //     { to: 1.25, ease: 'inOut(3)', duration: 200 },
-    //     { to: 1, ease: createSpring({ stiffness: 300 }) }
-    //   ],
-    //   loop: true,
-    //   loopDelay: 250,
-    // });
-    const [ $timer01,$timer02,$timer03 ] = utils.$('.timer');
+var slideTracker:number=-1;
 
-    const timer1 = createTimer({
-    duration: 500,
-    // onUpdate: self => $timer01.innerHTML = self.currentTime.toString(),
-    });
+// type SlideAnimation = JSAnimation; 
+// let animation: SlideAnimation[][] = [];
 
-    const timeline = createTimeline()
-    .sync(timer1)
+var animation:JSAnimation[]=[]
 
-    // .add({
-    //   onUpdate: self => $timer03.innerHTML = self.currentTime.toString(),
-    //   duration: 1000
-    // });
-    
-    const slideContainer:Array<HTMLElement>=Array.from(document.querySelectorAll('.slide')) as HTMLElement[];
-    slideiter=slideContainer[slideNum-1];
-
-    
-    if(!slideiter){return}
-    const textArr:Array<HTMLElement>= Array.from(slideiter.querySelectorAll(`${htmlObj}`)) as Array<HTMLElement>;
-    console.log(textArr)
-    // const text:
-
-    if(!textArr){return}
+export const letterTransition =(timeline:Timeline,slideNum:number,htmlObj:string)=>{
 
 
-    Array.from(textArr).forEach((element)=>{
+const {currentSlide} = storeToRefs(useSlideStore());
+const {setColInit} = useSlideStore();
+    slideTracker=currentSlide.value;
+    const [ $timer01 ] = utils.$('.timer');
+    const slideContainer=document.querySelectorAll('.slide');
+    const slideiter = slideContainer[slideNum-1].querySelector('.slideAction');
+    if (!slideiter) return;    
+    const textArr: Array<HTMLElement> = Array.from(slideiter.querySelectorAll(`${htmlObj}`)) as Array<HTMLElement>;
+    if (!textArr) return;
+
+    timeline = createTimeline({autoplay:false})
+
+
+    textArr.forEach((element)=>{
 
             
         const split = Splitting({ target: element});
-        console.log(split[0].lines)
+        // console.log(split[0].lines)
         
         var maxLineLen= 0;
         if(htmlObj=="h1"||htmlObj=="h2"||htmlObj=="h3"||htmlObj=="h4"||htmlObj=="h5"||htmlObj=="h6"){
@@ -64,7 +49,7 @@ export const letterTransition =(slideNum:number,htmlObj:string)=>{
             lines.forEach((elm)=>maxLineLen = Math.max(elm.length,maxLineLen));
         }
 
-        console.log(lines)
+        // console.log(lines)
 
         if(!lines){
         return
@@ -73,7 +58,7 @@ export const letterTransition =(slideNum:number,htmlObj:string)=>{
 
         
 
-        const marksAnim = document.querySelectorAll('.slideAction mark');
+        const marksAnim = slideiter.querySelectorAll('.slideAction mark');
 
         if(marksAnim){
 
@@ -113,11 +98,19 @@ export const letterTransition =(slideNum:number,htmlObj:string)=>{
 
         }
 
+        const charAll=slideiter.querySelectorAll('.char');
+        console.log(charAll);
 
-
+        
 
         if(htmlObj=="h1"||htmlObj=="h2"||htmlObj=="h3"||htmlObj=="h4"||htmlObj=="h5"||htmlObj=="h6"){
-            animate(lines, {
+
+            timeline.add(lines, {
+                opacity: [0],
+                duration: 0,
+                });
+
+            timeline.add(lines, {
                 translateX: [-100,0],
                 opacity: [0,1],
                 duration: 1600,
@@ -125,11 +118,19 @@ export const letterTransition =(slideNum:number,htmlObj:string)=>{
                 delay:(el,i) => 150 *(lines.length-i)
                 });
 
-
         }else{
 
         lines.forEach((elm,i)=>{
-            animate(elm, {
+            timeline.add(elm, {
+                opacity: [0],
+                duration: 0,
+                });
+
+            })
+            
+
+        lines.forEach((elm,i)=>{
+            timeline.add(elm, {
                 translateX: [-100,0],
                 opacity: [0,1],
                 duration: 1600,
@@ -138,17 +139,8 @@ export const letterTransition =(slideNum:number,htmlObj:string)=>{
                 });
 
             })
-
+            
         }
-
-
-
-        // timeline.sync(circleAnimation)
-
-
-
-
-
     })
-
+return timeline
 }

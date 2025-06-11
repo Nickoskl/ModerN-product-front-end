@@ -1,15 +1,20 @@
 <script setup lang="ts">
 // import slide1Canvas from './slide1Canvas.vue';
-import { useLoadStore } from '../store/loadingStore';
+import { useSlideStore } from '../store/slideStore';
 import lottie from 'lottie-web';
 import { onMounted } from 'vue';
 import type { AnimationItem } from 'lottie-web';
 import { storeToRefs } from 'pinia';
 
-const {gotoSlide} = useLoadStore()
-const {currentSlide} = storeToRefs(useLoadStore())
+import { animate, Timeline } from 'animejs';
+import { createTimeline, utils } from 'animejs';
+
+
+const {gotoSlide} = useSlideStore()
+const {currentSlide} = storeToRefs(useSlideStore())
 
 let anim: AnimationItem | null = null;
+let timeL:Timeline;
 
   
 
@@ -24,8 +29,29 @@ let anim: AnimationItem | null = null;
 
   
 
-onMounted(() => {
+  const testBtn=(elm:HTMLElement)=>{
 
+    timeL.restart();
+    // timeL.play();
+
+    console.warn("CLICKED");
+  }
+
+onMounted(() => {
+    const [ $value ] = utils.$('.value');
+    timeL = createTimeline({autoplay:false})
+    .label('animate circle', 1000)
+    .add('.slideAction h2', {
+    translateX: [-100,0],
+                opacity: [0,1],
+                translate:[-100,0],
+                onUpdate: self => $value.innerHTML = self.currentTime.toString(),
+                delay:(el,i,total) => 150 *(10-i)},0);
+    // const testAnim = animate('.slideAction',{
+    //     rotate: [100,0],
+    //     opacity: [0,1],
+    //     duration: 3600,
+    // })
 
   const container = document.querySelector('.lottieAnim');
   if (container) {
@@ -53,7 +79,6 @@ onMounted(() => {
 
 
 
-
   
 
 });
@@ -63,11 +88,12 @@ onMounted(() => {
 
 
     <div class="slideAction">
+        <h2 class="value"></h2>
         <h2>Not Just A Drink</h2>
         <h1>A M<p>oder</p>n Movement.</h1>
         <div class="slideBtn">
             <div class="lottieAnim"></div>
-            <a @mouseenter="addClass" @click="gotoSlide(currentSlide-1)" class="landingBtn" href="#">Fuel Up</a>
+            <a @mouseenter="addClass" @click="(e) => testBtn(e.target as HTMLElement)" class="landingBtn">Fuel Up</a>
         </div>
     </div>
 
@@ -128,12 +154,9 @@ h1,h2,h6{
     width:400%;
     transform: translate(0,-50%);
 }
+
 h1 p::after{
     background-color:var(--paletteWhite)
-}
-
-.landingBtn{
-  overflow: hidden;
 }
 
 

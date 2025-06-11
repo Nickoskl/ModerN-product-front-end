@@ -1,14 +1,14 @@
-import {useLoadStore} from '../store/loadingStore'
+import {useSlideStore} from '../store/slideStore'
 import { storeToRefs } from 'pinia';
 
 export default class letterFloat{
-    private store= storeToRefs(useLoadStore());
+    private store= storeToRefs(useSlideStore());
     private slideAction: HTMLElement|NodeListOf<HTMLElement>;
     private deltaX: number = 0;
     private deltaY: number = 0;
     private mouseX: number = 0;
     private mouseY: number = 0;
-    private speed:number = 0.02;
+    private speed:number = 0.03;
     private shouldAnimate:boolean=true;
     private spacingDeltaX: number = 0;
     constructor(elmnt:HTMLElement|NodeListOf<HTMLElement>) {
@@ -89,8 +89,8 @@ export default class letterFloat{
 
             if (this.slideAction instanceof NodeList) {
                 (this.slideAction[this.store.currentSlide.value - 1] as HTMLElement).style.transform = `translate(
-                ${(translateMatrix.m41 + (this.deltaX * this.speed))}px, 
-                calc(${Math.abs(translateMatrix.m42 + (this.deltaY * this.speed))}px)
+                ${(translateMatrix.m41 + (this.deltaX * (this.speed*2)))}px, 
+                calc(${Math.abs(translateMatrix.m42 + (this.deltaY * (this.speed*2)))}px)
                 )`;
             }
         

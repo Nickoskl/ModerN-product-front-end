@@ -3,27 +3,27 @@ import * as THREE from 'three';
 import { onMounted,watch } from 'vue';
 // import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 // import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { CSM } from 'three/addons/csm/CSM.js';
+// import { CSM } from 'three/addons/csm/CSM.js';
 
 ///////////// 3D COMPONENT IMPORT
 
-import {threeLoad,camera,scene,slideTransition,shouldAnimate,floor,csm,animState} from '../3d/index';
+import {threeLoad,camera,scene,slideTransition,shouldAnimate,animState} from '../3d/index';
 import canObjects from '../3d/components/canModel'
 
 ///////////// Animation
 
-import {animate,utils,createTimer } from 'animejs';
+import {animate } from 'animejs';
 // import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 
 ///////////// Animation Store
 
-import {useLoadStore} from '../store/loadingStore';
+import {useSlideStore} from '../store/slideStore';
 import { storeToRefs } from 'pinia';
 
 
 
 
-const {isLoaded,currentSlide,slides} = storeToRefs(useLoadStore());
+const {currentSlide} = storeToRefs(useSlideStore());
 
 
 
@@ -79,7 +79,7 @@ watch(() => currentSlide.value ,()=>{
         can2.rotation.y=Math.PI*2.6;
         slide2Cans.add(can3);
 
-        slide2Cans.position.set(-8,0,-4)
+        slide2Cans.position.set(9,0,80)
 
         scene.add(slide2Cans);
 
@@ -108,13 +108,13 @@ watch(() => currentSlide.value ,()=>{
         })
 
         animate(camera.rotation,{
-            x:{to:-0.19,
+            x:{to:-0.289,
             duration:1000,
             },
-            y:{to:-0.08,
+            y:{to:-0.091,
             duration:1000,
             },
-            z:{to:-0.006,
+            z:{to:-0.027,
             duration:1000,
             },
         // loop:true,
@@ -132,13 +132,29 @@ watch(() => currentSlide.value ,()=>{
         })
 
         animate(canObjects.position,{
-            x:{to:12,
+            x:{to:19,
             duration:1000,
             },
             y:{to:0,
             duration:1000,
             },
-            z:{to:12,
+            z:{to:-80,
+            duration:1000,
+            },
+        // loop:true,
+        // alternate: true,
+        ease: 'inOut(1.675)',
+        onComplete:()=>{slideTransition.value=false;shouldAnimate.value = true}
+        })
+
+        animate(slide2Cans.position,{
+            x:{to:15,
+            duration:1000,
+            },
+            y:{to:0,
+            duration:1000,
+            },
+            z:{to:0,
             duration:1000,
             },
         // loop:true,

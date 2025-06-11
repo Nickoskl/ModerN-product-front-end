@@ -1,13 +1,13 @@
 import { ref } from 'vue';
 import { storeToRefs } from "pinia";
-import { useLoadStore } from "../store/loadingStore";
+import { useSlideStore } from "../store/slideStore";
 
 var active=ref(true);
 export const snap=()=>{
   // active.value=false;
-  const speed = 0.09;
-  const {currentSlide} = storeToRefs(useLoadStore());
-  const {gotoSlide} = useLoadStore();
+  const speed = 0.19;
+  const {currentSlide} = storeToRefs(useSlideStore());
+  const {gotoSlide} = useSlideStore();
   // var tempCurrentSlide = currentSlide.value;
 
   if(!active.value){return}
